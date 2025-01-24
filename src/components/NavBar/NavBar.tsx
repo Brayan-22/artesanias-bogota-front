@@ -16,13 +16,16 @@ import MenuItem from "@mui/material/MenuItem";
 import Tooltip from "@mui/material/Tooltip";
 import React from "react";
 import { Link } from "react-router-dom";
+import { Cart } from "../Cart";
+
+import { selectCartItemsQuantity } from "../../Features/Cart/Cart";
 
 export type NavBarProps = {
   // types...
 };
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
-const NavBar: React.FC<NavBarProps> = ({}) => {
+const NavBar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
@@ -48,38 +51,41 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
   return (
     <AppBar
       position="static"
-      sx={{ bgcolor: "text.primary", position: "sticky" }}
+      sx={{ bgcolor: "#FFFF", position: "sticky", mb: 3 }}
     >
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           {/* <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} /> */}
 
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
+          <Link to="/">
+            <Typography
+              variant="h6"
+              noWrap
+              sx={{
+                mr: 2,
+                display: { xs: "none", md: "flex" },
+                fontFamily: "monospace",
+                fontWeight: 700,
+                letterSpacing: ".3rem",
+                color: "#FF6C1F",
+                textDecoration: "none",
+              }}
+            >
+              ARTESANÍAS BOGOTÁ
+            </Typography>
+          </Link>
+          <Box
             sx={{
-              mr: 2,
-              display: { xs: "none", md: "flex" },
-              fontFamily: "monospace",
-              fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
+              flexGrow: 1,
+              display: { xs: "flex", md: "none", color: "customColor.main",  },
             }}
           >
-            ARTESANÍAS BOGOTÁ
-          </Typography>
-
-          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"
               aria-label="account of current user"
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
-              color="inherit"
             >
               <MenuIcon />
             </IconButton>
@@ -97,22 +103,28 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
               }}
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
-              sx={{ display: { xs: "block", md: "none" } }}
+              sx={{ display: { xs: "block", md: "none", },   }}
             >
-              
-                <MenuItem  onClick={handleCloseNavMenu}>
+              <Link to="/products">
+                <MenuItem onClick={handleCloseNavMenu}>
                   <Typography sx={{ textAlign: "center" }}>CATÁLOGO</Typography>
                 </MenuItem>
+              </Link>
 
-                <MenuItem  onClick={handleCloseNavMenu}>
-                  <Typography sx={{ textAlign: "center" }}>INICIAR SESIÓN</Typography>
+              <Link to="/login">
+                <MenuItem onClick={handleCloseNavMenu}>
+                  <Typography sx={{ textAlign: "center" }}>
+                    INICIAR SESIÓN
+                  </Typography>
                 </MenuItem>
+              </Link>
+              <Cart />
+              <MenuItem onClick={handleCloseNavMenu}></MenuItem>
             </Menu>
           </Box>
           <Typography
             variant="h5"
             noWrap
-            component="a"
             href="#app-bar-with-responsive-menu"
             sx={{
               mr: 2,
@@ -121,7 +133,7 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
               fontFamily: "monospace",
               fontWeight: 700,
               letterSpacing: ".3rem",
-              color: "inherit",
+              color: "customColor.main",
               textDecoration: "none",
             }}
           >
@@ -133,19 +145,31 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
               display: { xs: "none", md: "flex", justifyContent: "flex-end" },
             }}
           >
-            <Button
-              onClick={handleCloseNavMenu}
-              sx={{ my: 2, color: "white", display: "block" }}
-            >
-              <Link to="/products">CATÁLOGO</Link>
-            </Button>
+            <Link to="/products">
+              <Button
+                onClick={handleCloseNavMenu}
+                sx={{ my: 2, color: "black", display: "block", mr:1 }}
+              >
+                CATÁLOGO
+              </Button>
+            </Link>
 
-            <Button
-              onClick={handleCloseNavMenu}
-              sx={{ my: 2, color: "white", display: "block" }}
-            >
-              INICIAR SESIÓN
-            </Button>
+            <Link to="/login">
+              <Button
+                onClick={handleCloseNavMenu}
+                sx={{
+                  my: 2,
+                  color: "customColor.contrastText",
+                  display: "block",
+                  backgroundColor: "customColor.main",
+                  mr:1,
+                }}
+              >
+                INICIAR SESIÓN
+              </Button>
+            </Link>
+
+            <Cart />
           </Box>
           {/*  <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">

@@ -9,7 +9,7 @@ interface ProductGalleryProps {
 
 const ProductGallery: React.FC<ProductGalleryProps> = ({ products }) => {
   return (
-    <Container sx={{display:'flex', mt:2, mx:'auto', flexWrap:'wrap', justifyContent:'center'}}>
+    <Container sx={{display:'flex', mb:2, mx:'auto', flexWrap:'wrap', justifyContent:'center'}}>
       {products.map((product) => (
         <ProductCard key={product.id} product={product} />
       ))}
