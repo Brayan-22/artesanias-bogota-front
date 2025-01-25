@@ -1,7 +1,7 @@
 "use client";
-import { Container } from '@mui/material';
+import { Box, Container } from '@mui/material';
 import React from 'react';
-import { InventoryTable } from '../InventoryTable';
+import InventoryTable from './InventoryTable';
 
 export type InventoryPageProps = {
 	// types...
@@ -9,9 +9,9 @@ export type InventoryPageProps = {
 
 const InventoryPage: React.FC<InventoryPageProps>  = ({}) => {
 	return (
-		<Container>
+		<Box sx={{p:4}}>
 			<InventoryTable/>
-		</Container>
+		</Box>
 	);
 };
 

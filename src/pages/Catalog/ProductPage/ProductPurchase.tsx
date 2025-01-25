@@ -1,9 +1,9 @@
 "use client";
 import { Box, Button, Stack, TextField, Typography } from "@mui/material";
 import React, { useState } from "react";
-import { Product } from "../../../../Features/Inventory/Inventory";
-import { useAppDispatch } from "../../../../app/hooks";
-import { CartItem, itemAddedToCart } from "../../../../Features/Cart/Cart";
+import { Product } from "../../../Features/Inventory/Inventory";
+import { useAppDispatch } from "../../../app/hooks";
+import { CartItem, itemAddedToCart } from "../../../Features/Cart/Cart";
 
 export type ProductPurchaseProps = {
   product: Product;

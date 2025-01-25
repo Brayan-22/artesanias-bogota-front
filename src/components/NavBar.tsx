@@ -16,9 +16,9 @@ import MenuItem from "@mui/material/MenuItem";
 import Tooltip from "@mui/material/Tooltip";
 import React from "react";
 import { Link } from "react-router-dom";
-import { Cart } from "../Cart";
 
 import { selectCartItemsQuantity } from "../../Features/Cart/Cart";
+import Cart from "./Cart/Cart";
 
 export type NavBarProps = {
   // types...
