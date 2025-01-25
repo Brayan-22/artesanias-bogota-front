@@ -23,8 +23,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import { visuallyHidden } from "@mui/utils";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { useAppSelector } from "../../../app/hooks";
-import { Product, productDeleted, selectAllProducts } from "../Inventory";
+import { useAppSelector } from "../../app/hooks";
+import { Product, productDeleted, selectAllProducts } from "./Inventory";
 
 function InventoryTable() {
   const products = useAppSelector(selectAllProducts);
@@ -164,7 +164,7 @@ function InventoryTable() {
                     <TableCell>{row.category}</TableCell>
                     <TableCell>{row.description}</TableCell>
                     <TableCell>
-                      <IconButton onClick={() => navigate(`/editProduct/${row.id}`)}>
+                      <IconButton onClick={() => navigate(`editProduct/${row.id}`)}>
                         <EditIcon />
                       </IconButton>
                     </TableCell>

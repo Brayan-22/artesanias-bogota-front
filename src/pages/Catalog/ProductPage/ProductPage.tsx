@@ -1,12 +1,12 @@
 "use client";
-import { Box, Container, Typography, Button, TextField, Stack } from "@mui/material";
+import { Box, Container, Typography } from "@mui/material";
 import React from "react";
-import { ProductGallery } from "./ProductGallery";
-import {  ProductPurshase } from "./ProductPurchase";
-import { ProductDetails } from "./ProductDetails";
+import { selectInventoryProduct } from "../../../Features/Inventory/Inventory";
 import { useParams } from "react-router-dom";
 import { useAppSelector } from "../../../app/hooks";
-import { selectInventoryProduct } from "../../../Features/Inventory/Inventory";
+import ProductGallery from "./ProductGallery";
+import ProductDetails from "./ProductDetails";
+import ProductPurchase from "./ProductPurchase";
 
 export type ProductPageProps = {
   // Define any additional props if necessary
@@ -42,7 +42,7 @@ const ProductPage: React.FC<ProductPageProps> = () => {
 
         {/* Información del producto */}
         <Box sx={{ flex: 1, display: "flex", flexDirection: "column", gap: 1 }}>
-          <ProductPurshase product={product}/>
+          <ProductPurchase product={product}/>
 		  <ProductDetails description = {product.description}/>
         </Box>
       </Box>

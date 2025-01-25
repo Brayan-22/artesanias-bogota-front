@@ -1,6 +1,6 @@
 import { Box, Container } from "@mui/material";
-import { Hero } from "../../components/Hero";
-import Populars from "../../components/Popular/Populars";
+import Hero from "../../components/Hero/Hero";
+import Populars from "../../components/Populars";
 import PhysicalStores from "./PhysicalStores";
 
 const HomePage = () => {

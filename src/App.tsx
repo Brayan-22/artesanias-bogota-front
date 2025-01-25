@@ -1,14 +1,13 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import "./index.css";
-import ProductForm from "./Features/Inventory/ProductForm";
-import { NavBar } from "./components/NavBar";
-import HomePage from "./pages/Home/HomePage";
 import Catalog from "./pages/Catalog/Catalog";
-import { InventoryPage } from "./Features/Inventory/InventoryPage";
-import { ProductPage } from "./pages/Catalog/ProductPage";
-import { LoginPage } from "./pages/LoginPage";
-import RequireAuth from "./components/RequireAuth";
+import HomePage from "./pages/Home/HomePage";
+import NavBar from "./components/NavBar";
+import ProductPage from "./pages/Catalog/ProductPage/ProductPage";
+import ProductForm from "./Features/Inventory/ProductForm";
+import LoginPage from "./pages/LoginPage/LoginPage";
+import InventoryPage from "./Features/Inventory/InventoryPage";
 
 function App() {
   return (
@@ -21,17 +20,11 @@ function App() {
         {/* Catálogo */}
         <Route path="products">
           <Route index element={<Catalog />} /> {/* Catálogo general */}
-          <Route path=":productId" element={<ProductPage />} />{" "}
-          {/* Página de producto individual */}
+          <Route path=":productId" element={<ProductPage />} /> {/* Página de producto individual */}
         </Route>
 
-        {/* Inventario (rutas protegidas) */}
-        <Route path="inventory">
-          {/* Página principal del inventario */}
-          <Route index element={<InventoryPage />} />
-          {/* Edición de producto */}
-          <Route path="editProduct/:id" element={<ProductForm />} />
-        </Route>
+        <Route path="/inventory" element={<InventoryPage />} />
+        <Route path="/inventory/editProduct/:id" element={<ProductForm />} />
 
         {/* Login */}
         <Route path="/login" element={<LoginPage />} />

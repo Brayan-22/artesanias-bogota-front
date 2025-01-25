@@ -8,7 +8,7 @@ import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import React from "react";
 import { Link } from "react-router-dom";
-import { Product } from "../../Features/Inventory/Inventory";
+import { Product } from "../Features/Inventory/Inventory";
 
 export type PorductCardProps = {
   product: Product;
