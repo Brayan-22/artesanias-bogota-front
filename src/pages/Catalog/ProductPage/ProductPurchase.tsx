@@ -1,4 +1,3 @@
-"use client";
 import { Box, Button, Stack, TextField, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { Product } from "../../../Features/Inventory/Inventory";
@@ -19,20 +18,23 @@ const ProductPurchase: React.FC<ProductPurchaseProps> = ({ product }) => {
   };
   const [cartItem, setCartItem] = useState(initialCartItem);
 
-  const handleCartItemQuantity = (e) => {
-    const cant = e.target.value;
-    if (cant >= cartItem.product.stock) {
-      alert("Lo sentimos, el producto se ha acabado");
-    } else {
-      setCartItem({
-        ...cartItem,
-        quantity: (cartItem.quantity += 1),
-      });
+  const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const quantity = parseInt(e.target.value, 10);
+
+    if (quantity > product.stock) {
+      alert("Lo sentimos, no hay suficiente stock");
+      return;
     }
+
+    setCartItem({
+      ...cartItem,
+      quantity: quantity > 0 ? quantity : 1, // Evitar cantidad negativa o cero
+    });
   };
+
   const handleAddProductToCart = (cartItem: CartItem) => {
     if (cartItem.quantity > cartItem.product.stock) {
-      alert("el producto se ha agotado");
+      alert("El producto se ha agotado");
     } else {
       dispatch(itemAddedToCart(cartItem));
     }
@@ -41,7 +43,7 @@ const ProductPurchase: React.FC<ProductPurchaseProps> = ({ product }) => {
   return (
     <Box sx={{ flex: 1, display: "flex", flexDirection: "column", gap: 2 }}>
       <Typography variant="h4">{product.name}</Typography>
-      <Typography variant="body2">Categoría: {product.category.name}</Typography>
+      <Typography variant="body2">Categoría: {product.category ? product.category.name : "N/A"}</Typography>
       <Typography variant="h6" sx={{ color: "green" }}>
         ${product.price.toFixed(2)} USD
       </Typography>
@@ -50,14 +52,12 @@ const ProductPurchase: React.FC<ProductPurchaseProps> = ({ product }) => {
         <TextField
           type="number"
           label="Cantidad"
-          defaultValue={1}
           value={cartItem.quantity}
           inputProps={{ min: 1 }}
           sx={{ width: "100px" }}
-          onClick={(e) => handleCartItemQuantity(e)}
+          onChange={handleQuantityChange} // Usamos onChange para capturar cambios en la cantidad
         />
         <Button
-          /* variant='outlined' */
           sx={{
             backgroundColor: "customColor.success",
             color: "customColor.contrastText",

@@ -1,6 +1,5 @@
 "use client";
-import React, { MouseEventHandler, useState } from "react";
-import { useTheme } from "@mui/material/styles";
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -12,46 +11,18 @@ import {
   Typography,
 } from "@mui/material";
 import axios from "../../api/axios";
-import useAuth from "../../hooks/useAuth";
-import { useLocation, useNavigate } from "react-router-dom";
 
 const LOGIN_URL = "http://localhost:3500/auth";
 
-export type LoginPageProps = {
-  // types...
-};
 
-const LoginPage: React.FC<LoginPageProps> = ({}) => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const from = location.state?.from?.pathname || "/";
 
+const LoginPage = ({}) => {
+  
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-  
-    try {
-      const response = await axios.post(
-        LOGIN_URL,
-        JSON.stringify({ user, pwd: password }),
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: false,
-        }
-      );
-      console.log(JSON.stringify(response?.data));
-      const accessToken = response?.data?.accessToken;
-      const roles = response?.data?.roles;
-      console.log(roles);
-  
-      setUser("");
-      setPassword("");
-      // navigate(from, { replace: true });
-    } catch (err) {
-      console.error(err);
-    }
+    
   };
   
 

@@ -1,10 +1,8 @@
-"use client";
 import { Box, Container, Typography } from "@mui/material";
 import React from "react";
 import { selectInventoryProduct } from "../../../Features/Inventory/Inventory";
 import { useParams } from "react-router-dom";
 import { useAppSelector } from "../../../app/hooks";
-import ProductGallery from "../ProductList.tsx";
 import ProductDetails from "./ProductDetails";
 import ProductPurchase from "./ProductPurchase";
 

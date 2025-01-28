@@ -1,15 +1,11 @@
-"use client";
-import React from "react";
 import { Button, Container } from "@mui/material";
 import heroImage from "/src/assets/images/home/hero-image.jpg"; 
 import { Link, useNavigate } from "react-router-dom";
 
 
-export type HeroProps = {
-  // types...
-};
 
-const Hero: React.FC<HeroProps> = ({}) => {
+
+const Hero = ({}) => {
   const navigate = useNavigate()
   return (
     <Container

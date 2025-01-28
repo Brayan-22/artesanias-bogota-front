@@ -1,4 +1,3 @@
-"use client";
 import React, { useState } from "react";
 import {
   Accordion,
@@ -16,15 +15,16 @@ import {
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useAppSelector } from "../app/hooks";
 import { selectAllCategories } from "../Features/Categories/Category";
-import { selectProductsByCategoryId } from "../Features/Inventory/Inventory";
 
 const ProductSearchCriteria: React.FC = () => {
   const categories = useAppSelector(selectAllCategories);
 
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
 
-
-  const handleSelectCategories = (event: React.ChangeEvent<HTMLInputElement>, id: number) => {
+  const handleSelectCategories = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    id: number
+  ) => {
     if (event.target.checked) {
       setSelectedCategories((prev) => [...prev, id]);
     } else {
@@ -76,11 +76,16 @@ const ProductSearchCriteria: React.FC = () => {
             label="Todas las categorías"
             control={
               <Checkbox
-                indeterminate={selectedCategories.length > 0 && selectedCategories.length < categories.length}
+                indeterminate={
+                  selectedCategories.length > 0 &&
+                  selectedCategories.length < categories.length
+                }
                 checked={selectedCategories.length === categories.length}
                 onChange={(e) => {
                   if (e.target.checked) {
-                    setSelectedCategories(categories.map((category) => category.id));
+                    setSelectedCategories(
+                      categories.map((category) => category.id)
+                    );
                   } else {
                     setSelectedCategories([]);
                   }
@@ -89,7 +94,10 @@ const ProductSearchCriteria: React.FC = () => {
             }
           />
           {categories.map((category) => (
-            <Box key={category.id} sx={{ display: "flex", flexDirection: "column", ml: 3 }}>
+            <Box
+              key={category.id}
+              sx={{ display: "flex", flexDirection: "column", ml: 3 }}
+            >
               <FormControlLabel
                 label={category.name}
                 control={
@@ -104,7 +112,6 @@ const ProductSearchCriteria: React.FC = () => {
         </AccordionDetails>
       </Accordion>
 
-      {/* Placeholder para tiendas */}
       <Accordion>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
