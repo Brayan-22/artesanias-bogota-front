@@ -11,7 +11,7 @@ COPY package.json yarn.lock ./
 RUN yarn install
 
 # Copia todo el código fuente al contenedor
-COPY . .
+COPY ./ .
 
 # Expone el puerto 3000 para el entorno de desarrollo
 EXPOSE 3000
