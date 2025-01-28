@@ -13,7 +13,7 @@ COPY package.json yarn.lock ./
 # Copia solo los archivos necesarios para la aplicación
 COPY public ./public
 COPY src ./src
-COPY elint.config.js ./
+COPY eslint.config.js ./
 COPY index.html ./
 COPY tsconfig.node.json ./
 COPY tsconfig.app.json ./
