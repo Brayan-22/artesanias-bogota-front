@@ -14,12 +14,11 @@ const palette: PaletteOptions = {
     contrastText: "#000000", // Texto negro
   },
   customColor: {
-    main: "#FF6C1F", // Verde
-    light: "#80e27e",
-    dark: "#000000",
-    contrastText: "#FFFF",
-    success: "#00b27d",
-    
+    main: "#FF6C1F", // Naranja
+    light: "#80e27e", // Verde claro
+    dark: "#000000", // Negro
+    contrastText: "#FFFF", // Blanco
+    success: "#00b27d", // Verde de éxito
   },
 };
 

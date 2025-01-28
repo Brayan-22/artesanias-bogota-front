@@ -1,16 +1,19 @@
 import { Box } from "@mui/material";
-import React, { useState } from "react";
+import { useState } from "react";
 import CategoryTable from "./CategoryTable";
 import CategoryForm from "./CategoryForm";
 import { Category } from "./Category";
 import { useNavigate } from "react-router-dom";
 
 export interface CurrentCategory {
-  category: Category | null;
+  category: Category 
 }
 
 const defaultCategory: CurrentCategory = {
-  category: null,
+  category: {
+    id: 0,
+    name: ""
+  }
 };
 
 const CategoriesPage = () => {
@@ -41,7 +44,7 @@ const CategoriesPage = () => {
         justifyContent: "center",
       }}
     >
-      <CategoryForm currentCategory={currentCategory} />
+      <CategoryForm  />
       <CategoryTable toggleCurrentCategory={toggleCurrentCategory} />
     </Box>
   );

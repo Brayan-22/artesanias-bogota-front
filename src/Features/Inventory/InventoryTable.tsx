@@ -1,4 +1,3 @@
-"use client";
 import React, { useState } from "react";
 import {
   Box,
@@ -22,7 +21,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "../../app/hooks";
-import { Product, productDeleted, selectAllProducts } from "./Inventory";
+import {  productDeleted, selectAllProducts } from "./Inventory";
 
 function InventoryTable() {
   const products = useAppSelector(selectAllProducts);

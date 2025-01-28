@@ -1,4 +1,3 @@
-"use client";
 import React from "react";
 import Badge, { BadgeProps } from "@mui/material/Badge";
 import { styled } from "@mui/material/styles";
@@ -12,9 +11,6 @@ import { selectCart, selectCartItemsQuantity } from "../../Features/Cart/Cart";
 import { Typography } from "@mui/material";
 import CartProductCard from "./CartProductCard";
 
-export type CartProps = {
-  handleCloseNavMenu: () => void; // Función que se llama al interactuar con el carrito
-};
 
 const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
   "& .MuiBadge-badge": {

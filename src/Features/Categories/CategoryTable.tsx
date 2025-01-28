@@ -13,8 +13,6 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import React, { useState } from "react";
 import { Category, selectAllCategories } from "./Category";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../app/hooks";
 
 
@@ -24,8 +22,6 @@ interface CategoryTableProps{
 
 const CategoryTable:React.FC<CategoryTableProps> = ({ toggleCurrentCategory }) => {
   const categories = useAppSelector(selectAllCategories);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const [selected, setSelected] = useState<number>(0);
   const [page, setPage] = useState(0);
