@@ -1,17 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import { useAppSelector } from "../../app/hooks";
-import { selectAllProducts } from "../../Features/Inventory/Inventory";
+import { Product, selectAllProducts } from "../../Features/Inventory/Inventory";
 import { Container } from "@mui/material";
 import ProductSearchCriteria from "../../components/ProductSearchCriteria";
-import ProductGallery from "./ProductPage/ProductGallery";
+import ProductList from "./ProductList.tsx";
 
 const Catalog = () => {
-  const products = useAppSelector(selectAllProducts);
+  const initialProducts = useAppSelector(selectAllProducts);
+  const [products, setProducts] = useState<Product[]>(initialProducts);
+
   return (
-    <Container sx={{display:'flex'}}>
+    <Container sx={{ display: "flex" }}>
       <ProductSearchCriteria />
-      
-      <ProductGallery products={products} />
+      <ProductList products={products} />
     </Container>
   );
 };

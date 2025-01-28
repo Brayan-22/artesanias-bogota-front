@@ -1,8 +1,10 @@
 import { Opacity } from "@mui/icons-material";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const PhysicalStores = () => {
+  const navigate  = useNavigate()
   return (
     <Stack direction={{ xs: "column", sm: "row" }} sx={{ overflow: "hidden" }}>
       {/* Primera imagen como fondo */}
@@ -50,7 +52,7 @@ const PhysicalStores = () => {
           },
         }}
       >
-        <Button variant="contained" color="success" sx={{ opacity: 1 }}>
+        <Button variant="contained" color="success" sx={{ opacity: 1 }} onClick={()=> navigate("/products")}>
           Comprar Ahora
         </Button>
       </Box>

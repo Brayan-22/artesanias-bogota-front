@@ -6,79 +6,114 @@ import {
   Typography,
   Paper,
   Stack,
+  NativeSelect,
 } from "@mui/material";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
-import { selectInventoryProduct, productEdited } from "./Inventory";
+import {
+  selectInventoryProduct,
+  productEdited,
+  productCreated,
+} from "./Inventory";
+import { selectAllCategories } from "../Categories/Category";
+
+const CREATE = "/inventory/createProduct";
+const EDIT = "/inventory/editProduct";
 
 const ProductForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const { pathname } = useLocation();
 
-  // Fetch the product by id from the Redux store
   const product = useAppSelector((state) =>
     selectInventoryProduct(state, Number(id))
   );
 
-  // Local state for form fields
+  const categories = useAppSelector(selectAllCategories);
+
+  const [preview, setPreview] = useState<string>(product?.image || "");
+
   const [formState, setFormState] = useState({
     name: product?.name || "",
     stock: product?.stock || 0,
     price: product?.price || 0,
-    category: product?.category || "",
+    category: product?.category || null,
     description: product?.description || "",
-    image: product?.image || "", // For the product image
+    image: product?.image || "", // Siempre una cadena
   });
+  
 
-  // Local state for image preview
-  const [preview, setPreview] = useState(product?.image || "");
-
-  if (!product) {
+  if (!product && pathname == EDIT) {
     return <Typography variant="h6">Producto no encontrado</Typography>;
   }
 
-  const handleInputChange = (e) => {
+  const handleInputChange =  (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement |HTMLTextAreaElement> ) => {
     const { name, value } = e.target;
+
     setFormState({
       ...formState,
-      [name]: name === "stock" || name === "price" ? Number(value) : value,
+      [name]: name === "stock" || name === "price" ? Number(value) :
+        name === "category" ? categories.find(category => category.id === Number(value)) :
+        value,
     });
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {
-        setPreview(reader.result);
-        setFormState((prevState) => ({
-          ...prevState,
-          image: reader.result,
-        }));
+        const result = reader.result;
+        if (typeof result === "string") {
+          setPreview(result);
+          setFormState((prevState) => ({
+            ...prevState,
+            image: result,
+          }));
+        }
       };
       reader.readAsDataURL(file);
     }
   };
+  
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const addProduct = () => {
+    dispatch(
+      productCreated({
+        id: Date.now(),
+        ...formState,
+      })
+    );
+  };
+
+  const editProduct = () => {
+    if (!product) {
+      console.error("No se puede editar: Producto no encontrado");
+      return;
+    }
     dispatch(
       productEdited({
         id: product.id,
         ...formState,
       })
     );
+  };
+  
+
+ const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    pathname === CREATE ? addProduct() : editProduct();
     navigate("/inventory"); // Navigate back to the inventory page
   };
 
   return (
     <Paper
       elevation={3}
-      sx={{ padding: 4, maxWidth: 600, margin: "auto", mt: 5, }}
+      sx={{ padding: 4, maxWidth: 600, margin: "auto", mt: 5 }}
     >
       <Typography variant="h5" gutterBottom>
-        Editar Producto
+        {pathname === CREATE ? "Crear Producto" : "Editar Producto"}
       </Typography>
       <Box component="form" onSubmit={handleSubmit} noValidate>
         <Stack spacing={2}>
@@ -127,6 +162,7 @@ const ProductForm = () => {
               onChange={handleInputChange}
               required
             />
+
             <TextField
               fullWidth
               label="Precio"
@@ -137,13 +173,18 @@ const ProductForm = () => {
               required
             />
           </Stack>
-          <TextField
-            fullWidth
-            label="Categoría"
+          <NativeSelect
+            sx={{ mb: 5 }}
             name="category"
-            value={formState.category}
+            value={formState.category ? formState.category.id : ""}
             onChange={handleInputChange}
-          />
+          >
+            {categories.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.name}
+              </option>
+            ))}
+          </NativeSelect>
           <TextField
             fullWidth
             label="Descripción"
@@ -156,7 +197,7 @@ const ProductForm = () => {
         </Stack>
         <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
           <Button variant="contained" color="primary" type="submit">
-            Guardar Cambios
+            {pathname === CREATE ? "Crear Producto" : "Editar Producto"}
           </Button>
           <Button
             variant="outlined"

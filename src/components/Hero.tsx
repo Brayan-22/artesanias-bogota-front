@@ -1,18 +1,16 @@
 "use client";
 import React from "react";
-import styles from "./Hero.module.scss";
 import { Button, Container } from "@mui/material";
-import { Height } from "@mui/icons-material";
-import heroImage from "../../assets/images/home/hero-image.jpg"; // Ajusta la ruta según tu estructura
-import { Link } from "react-router-dom";
+import heroImage from "/src/assets/images/home/hero-image.jpg"; 
+import { Link, useNavigate } from "react-router-dom";
 
-/* import "./Hero.scss"; */
 
 export type HeroProps = {
   // types...
 };
 
 const Hero: React.FC<HeroProps> = ({}) => {
+  const navigate = useNavigate()
   return (
     <Container
       className="hero-image"
@@ -29,7 +27,7 @@ const Hero: React.FC<HeroProps> = ({}) => {
       }}
     >
       <Link to ="/products">
-        <Button variant="contained" sx={{ background: "#212121" }}>
+        <Button variant="contained" sx={{ background: "#212121" }} onClick={()=>navigate("/products")}>
           Comprar ahora
         </Button>
       </Link>

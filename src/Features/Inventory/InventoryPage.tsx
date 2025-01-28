@@ -2,6 +2,7 @@
 import { Box, Container } from '@mui/material';
 import React from 'react';
 import InventoryTable from './InventoryTable';
+import InventoryDashBoard from './InventoryDashBoard';
 
 export type InventoryPageProps = {
 	// types...
@@ -10,6 +11,7 @@ export type InventoryPageProps = {
 const InventoryPage: React.FC<InventoryPageProps>  = ({}) => {
 	return (
 		<Box sx={{p:4}}>
+			<InventoryDashBoard/>
 			<InventoryTable/>
 		</Box>
 	);

@@ -10,7 +10,6 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  TableSortLabel,
   Toolbar,
   Typography,
   Checkbox,
@@ -20,7 +19,6 @@ import {
 import { alpha } from "@mui/material/styles";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { visuallyHidden } from "@mui/utils";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "../../app/hooks";
@@ -31,8 +29,6 @@ function InventoryTable() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [order, setOrder] = useState<"asc" | "desc">("asc");
-  const [orderBy, setOrderBy] = useState<keyof Product>("price");
   const [selected, setSelected] = useState<number[]>([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -46,11 +42,7 @@ function InventoryTable() {
     description: product.description,
   }));
 
-  const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof Product) => {
-    const isAsc = orderBy === property && order === "asc";
-    setOrder(isAsc ? "desc" : "asc");
-    setOrderBy(property);
-  };
+ 
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
@@ -161,7 +153,7 @@ function InventoryTable() {
                     <TableCell>{row.name}</TableCell>
                     <TableCell>{row.stock}</TableCell>
                     <TableCell>{row.price}</TableCell>
-                    <TableCell>{row.category}</TableCell>
+                    <TableCell>{row.category ?row.category.name: "sin asignar" }</TableCell>
                     <TableCell>{row.description}</TableCell>
                     <TableCell>
                       <IconButton onClick={() => navigate(`editProduct/${row.id}`)}>

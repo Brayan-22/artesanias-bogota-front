@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
+import { Category } from "../Categories/Category";
 
 export interface Product {
   id: number;
@@ -7,17 +8,22 @@ export interface Product {
   stock: number;
   description: String;
   price: number;
-  category: String;
+  category: Category | null
   image:string
 }
 
 export interface Inventory {
   id: number;
+  name:string
   products: Product[];
 }
 
+
+
 const initialState: Inventory = {
   id: 0,
+  name: "default invnentory",
+  //categories: defaultCategories,
   products: [
     {
       id: 1,
@@ -26,7 +32,7 @@ const initialState: Inventory = {
         "Mochila tejida a mano por la comunidad Wayuu, hecha con hilos de algodón y diseños tradicionales.",
       price: 45.0,
       stock: 5,
-      category: "artesanías",
+      category: { id: 3, name: "Tejidos" },
       image: "/src/assets/images/product1.jpg"
     },
     {
@@ -36,7 +42,7 @@ const initialState: Inventory = {
         "Sombrero tradicional de la cultura zenú, tejido a mano con caña fleha.",
       price: 60.0,
       stock: 50,
-      category: "artesanías",
+      category: { id: 3, name: "Tejidos" },
       image: "/src/assets/images/product1.jpg"
     },
     {
@@ -46,7 +52,7 @@ const initialState: Inventory = {
         "Figura de cerámica hecha a mano inspirada en las formas de la cultura Tairona.",
       price: 30.0,
       stock: 75,
-      category: "artesanías",
+      category: { id: 1, name: "Cerámica" },
       image: "/src/assets/images/product1.jpg"
     },
     {
@@ -56,7 +62,7 @@ const initialState: Inventory = {
         "Cesta tejida a mano por la comunidad Embera, ideal para decoración o almacenamiento.",
       price: 25.0,
       stock: 150,
-      category: "decoración",
+      category: { id: 3, name: "Tejidos" },
       image: "/src/assets/images/product1.jpg"
     },
     {
@@ -66,7 +72,7 @@ const initialState: Inventory = {
         "Collares hechos a mano por la comunidad Kogi, elaborados con semillas y piedras naturales.",
       price: 35.0,
       stock: 80,
-      category: "artesanías",
+      category: { id: 4, name: "Joyería artesanal" },
       image: "/src/assets/images/product1.jpg"
     },
     {
@@ -76,7 +82,7 @@ const initialState: Inventory = {
         "Tapiz tejido con patrones geométricos, ideal para decoración de paredes.",
       price: 55.0,
       stock: 40,
-      category: "decoración",
+      category: { id: 3, name: "Tejidos" },
       image: "/src/assets/images/product1.jpg"
     },
     {
@@ -86,7 +92,7 @@ const initialState: Inventory = {
         "Juguetes artesanales elaborados en madera por artesanos locales.",
       price: 20.0,
       stock: 100,
-      category: "infantil",
+      category: { id: 2, name: "Madera" },
       image: "/src/assets/images/product1.jpg"
     },
     {
@@ -95,7 +101,7 @@ const initialState: Inventory = {
       description: "Pulseras coloridas hechas a mano por la comunidad Kuna.",
       price: 15.0,
       stock: 200,
-      category: "accesorios",
+      category: { id: 4, name: "Joyería artesanal" },
       image: "/src/assets/images/product1.jpg"
     },
     {
@@ -105,7 +111,7 @@ const initialState: Inventory = {
         "Café cultivado de manera orgánica en fincas de pequeñas comunidades campesinas.",
       price: 12.0,
       stock: 500,
-      category: "alimentos",
+      category: { id: 6, name: "Cestas y canastos" },
       image: "/src/assets/images/product1.jpg"
     },
     {
@@ -115,7 +121,7 @@ const initialState: Inventory = {
         "Miel pura cosechada por apicultores de comunidades rurales.",
       price: 10.0,
       stock: 300,
-      category: "alimentos",
+      category: { id: 6, name: "Cestas y canastos" },
       image: "/src/assets/images/product1.jpg"
     },
     {
@@ -125,7 +131,7 @@ const initialState: Inventory = {
         "Hamaca tejida a mano con hilos resistentes y colores vivos.",
       price: 70.0,
       stock: 30,
-      category: "hogar",
+      category: { id: 3, name: "Tejidos" },
       image: "/src/assets/images/product1.jpg"
     },
     {
@@ -135,7 +141,7 @@ const initialState: Inventory = {
         "Ruana tradicional tejida en lana de oveja, perfecta para el frío.",
       price: 80.0,
       stock: 60,
-      category: "ropa",
+      category: { id: 3, name: "Tejidos" },
       image: "/src/assets/images/product1.jpg"
     },
     {
@@ -145,7 +151,7 @@ const initialState: Inventory = {
         "Sombrero hecho a mano en Aguadas, Caldas, tejido con iraca.",
       price: 45.0,
       stock: 90,
-      category: "artesanías",
+      category: { id: 3, name: "Tejidos" },
       image: "/src/assets/images/product1.jpg"
     },
     {
@@ -155,7 +161,7 @@ const initialState: Inventory = {
         "Bolso ecológico fabricado en yute, ideal para compras sostenibles.",
       price: 25.0,
       stock: 120,
-      category: "accesorios",
+      category: { id: 4, name: "Joyería artesanal" },
       image: "/src/assets/images/product1.jpg"
     },
     {
@@ -165,7 +171,7 @@ const initialState: Inventory = {
         "Vasija de barro hecha a mano, ideal para decoración o cocina tradicional.",
       price: 20.0,
       stock: 150,
-      category: "cocina",
+      category: { id: 1, name: "Cerámica" },
       image: "/src/assets/images/product1.jpg"
     },
     {
@@ -174,7 +180,7 @@ const initialState: Inventory = {
       description: "Cuchara tallada en madera, perfecta para cocinar.",
       price: 5.0,
       stock: 300,
-      category: "cocina",
+      category: { id: 2, name: "Madera" },
       image: "/src/assets/images/product1.jpg"
     },
     {
@@ -183,7 +189,7 @@ const initialState: Inventory = {
       description: "Poncho elaborado con lana suave, cómodo y abrigador.",
       price: 65.0,
       stock: 80,
-      category: "ropa",
+      category: { id: 3, name: "Tejidos" },
       image: "/src/assets/images/product1.jpg"
     },
     {
@@ -192,7 +198,7 @@ const initialState: Inventory = {
       description: "Tablero y piezas de ajedrez talladas a mano por artesanos.",
       price: 100.0,
       stock: 20,
-      category: "juegos",
+      category: { id: 2, name: "Madera" },
       image: "/src/assets/images/product1.jpg"
     },
     {
@@ -201,7 +207,7 @@ const initialState: Inventory = {
       description: "Tapabocas reutilizable, confeccionado con tela de algodón.",
       price: 8.0,
       stock: 400,
-      category: "salud",
+      category: { id: 6, name: "Cestas y canastos" },
       image: "/src/assets/images/product1.jpg"
     },
     {
@@ -211,9 +217,9 @@ const initialState: Inventory = {
         "Cartera elaborada con cuero auténtico, resistente y elegante.",
       price: 120.0,
       stock: 50,
-      category: "accesorios",
+      category: { id: 4, name: "Joyería artesanal" },
       image: "/src/assets/images/product1.jpg"
-    },
+    }
   ],
 };
 
@@ -243,12 +249,13 @@ const inventorySlice = createSlice({
         (product) => product.id != action.payload
       );
     },
+
   },
 });
 
 export default inventorySlice.reducer;
 
-export const { productDeleted, productEdited } = inventorySlice.actions;
+export const { productCreated,productDeleted, productEdited} = inventorySlice.actions;
 
 export const selectInventory = (state: RootState) => state.inventory;
 
@@ -256,3 +263,10 @@ export const selectAllProducts = (state: RootState) => state.inventory.products;
 
 export const selectInventoryProduct = (state: RootState, productId: number) =>
   state.inventory.products.find((product) => product.id == productId);
+
+
+export const selectProductsByCategoryId = (state: RootState, categoriesId: number[]) =>
+  state.inventory.products.filter(
+    product => product.category && categoriesId.includes(product.category.id)
+  );
+

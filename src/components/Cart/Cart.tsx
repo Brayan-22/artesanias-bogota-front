@@ -7,19 +7,10 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import Button from "@mui/material/Button";
-import List from "@mui/material/List";
-import Divider from "@mui/material/Divider";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
-import CartProductCard from "./CartProductCarD";
 import { useAppSelector } from "../../app/hooks";
-import { selectAllProducts } from "../../Features/Inventory/Inventory";
-import { Cart as cartSlice, selectCart, selectCartItemsQuantity } from "../../Features/Cart/Cart";
+import { selectCart, selectCartItemsQuantity } from "../../Features/Cart/Cart";
 import { Typography } from "@mui/material";
+import CartProductCard from "./CartProductCard";
 
 export type CartProps = {
   handleCloseNavMenu: () => void; // Función que se llama al interactuar con el carrito
@@ -93,11 +84,39 @@ const Cart = () => {
         </Box>
       </Box>
     ) : (
-      <Box sx={{display:'flex', flexWrap:'wrap', justifyContent:'center'}}>
-        <Typography variant="body1">
-          No se han ingresado productos al carrito
-        </Typography>
-      </Box>
+      <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh", // Asegura que esté centrado verticalmente
+        textAlign: "center",
+      }}
+    >
+      <Typography
+        variant="h6"
+        sx={{
+          fontWeight: "bold",
+          color: "#757575", // Color gris llamativo
+          textTransform: "uppercase", // Texto en mayúsculas
+          mb: 2, // Espaciado inferior
+        }}
+      >
+        No se han ingresado
+      </Typography>
+
+      <Typography
+        variant="h6"
+        sx={{
+          fontWeight: "bold",
+          color: "#757575",
+          textTransform: "uppercase",
+        }}
+      >
+        Productos al carrito
+      </Typography>
+    </Box>
     );
 
   return (
@@ -107,7 +126,7 @@ const Cart = () => {
           <ShoppingCartIcon />
         </StyledBadge>
       </IconButton>
-      <Drawer anchor="right" open={open} onClose={toggleDrawer(false)}>
+      <Drawer sx={{p:4}} anchor="right" open={open} onClose={toggleDrawer(false)}>
         {DrawerList}
       </Drawer>
     </>

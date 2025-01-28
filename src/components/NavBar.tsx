@@ -16,8 +16,6 @@ import MenuItem from "@mui/material/MenuItem";
 import Tooltip from "@mui/material/Tooltip";
 import React from "react";
 import { Link } from "react-router-dom";
-
-import { selectCartItemsQuantity } from "../../Features/Cart/Cart";
 import Cart from "./Cart/Cart";
 
 export type NavBarProps = {
@@ -125,7 +123,6 @@ const NavBar = () => {
           <Typography
             variant="h5"
             noWrap
-            href="#app-bar-with-responsive-menu"
             sx={{
               mr: 2,
               display: { xs: "flex", md: "none" },

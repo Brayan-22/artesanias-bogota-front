@@ -3,13 +3,11 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
-import CardActionArea from "@mui/material/CardActionArea";
 import CardActions from "@mui/material/CardActions";
-import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useAppDispatch } from "../../app/hooks";
 import { CartItem, itemDeletedFromCart } from "../../Features/Cart/Cart";
+import { CardActionArea } from "@mui/material";
 
 export type CartProductCardProps = {
   cartItem: CartItem

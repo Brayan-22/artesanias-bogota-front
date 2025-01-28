@@ -41,6 +41,7 @@ const ProductPurchase: React.FC<ProductPurchaseProps> = ({ product }) => {
   return (
     <Box sx={{ flex: 1, display: "flex", flexDirection: "column", gap: 2 }}>
       <Typography variant="h4">{product.name}</Typography>
+      <Typography variant="body2">Categoría: {product.category.name}</Typography>
       <Typography variant="h6" sx={{ color: "green" }}>
         ${product.price.toFixed(2)} USD
       </Typography>

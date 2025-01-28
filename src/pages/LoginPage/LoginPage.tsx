@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { MouseEventHandler, useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import {
   Box,
@@ -26,13 +26,12 @@ const LoginPage: React.FC<LoginPageProps> = ({}) => {
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
 
-  const { setAuth } = useAuth();
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-
+  
     try {
       const response = await axios.post(
         LOGIN_URL,
@@ -42,20 +41,19 @@ const LoginPage: React.FC<LoginPageProps> = ({}) => {
           withCredentials: false,
         }
       );
-	  console.log(JSON.stringify(response?.data));
-	  //console.log(JSON.stringify(response));
-	  const accessToken = response?.data?.accessToken;
-	  const roles = response?.data?.roles;
-	  console.log(roles);
-	  
-	  setAuth({ user, pwd: password, roles, accessToken });
-	  setUser('');
-	  setPassword('');
-	  /* navigate(from, {replace: true}); */
+      console.log(JSON.stringify(response?.data));
+      const accessToken = response?.data?.accessToken;
+      const roles = response?.data?.roles;
+      console.log(roles);
+  
+      setUser("");
+      setPassword("");
+      // navigate(from, { replace: true });
     } catch (err) {
       console.error(err);
     }
   };
+  
 
   return (
     <Container sx={{ display: "flex", justifyContent: "center" }}>

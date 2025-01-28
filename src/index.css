@@ -1,6 +1,4 @@
-/* index.css */
 
-/* Elimina los márgenes y el padding por defecto */
 *,
 *::before,
 *::after {
@@ -9,29 +7,25 @@
   box-sizing: border-box;
 }
 
-/* Asegura que el html y body ocupen toda la pantalla */
 html,
 body {
   height: 100%;
   width: 100%;
-  font-family: Arial, sans-serif; /* Cambia la fuente si lo deseas */
+  font-family: Arial, sans-serif; 
 }
 
-/* Eliminar márgenes del body y garantizar que ocupe toda la pantalla */
 body {
   margin: 0;
   padding: 0;
 }
 
-/* Asegura que las imágenes no sobrepasen su contenedor */
 img {
   max-width: 100%;
   height: auto;
 }
 
-/* Si usas contenedores, puedes querer establecer su comportamiento también */
 .container {
-  margin: 0 auto; /* Centra los contenedores si es necesario */
+  margin: 0 auto; 
   padding: 0;
   padding-left: 0 !important;
   padding-right: 0 !important;

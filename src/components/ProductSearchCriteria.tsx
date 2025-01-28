@@ -1,4 +1,5 @@
 "use client";
+import React, { useState } from "react";
 import {
   Accordion,
   AccordionDetails,
@@ -13,39 +14,23 @@ import {
   Typography,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import React from "react";
+import { useAppSelector } from "../app/hooks";
+import { selectAllCategories } from "../Features/Categories/Category";
+import { selectProductsByCategoryId } from "../Features/Inventory/Inventory";
 
-export type ProductSearchCriteriaProps = {
-  // types...
-};
+const ProductSearchCriteria: React.FC = () => {
+  const categories = useAppSelector(selectAllCategories);
 
-const ProductSearchCriteria: React.FC<ProductSearchCriteriaProps> = ({}) => {
-  const [checked, setChecked] = React.useState([true, false]);
+  const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
 
-  const handleChange1 = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setChecked([event.target.checked, event.target.checked]);
+
+  const handleSelectCategories = (event: React.ChangeEvent<HTMLInputElement>, id: number) => {
+    if (event.target.checked) {
+      setSelectedCategories((prev) => [...prev, id]);
+    } else {
+      setSelectedCategories((prev) => prev.filter((c) => c !== id));
+    }
   };
-
-  const handleChange2 = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setChecked([event.target.checked, checked[1]]);
-  };
-
-  const handleChange3 = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setChecked([checked[0], event.target.checked]);
-  };
-
-  const children = (
-    <Box sx={{ display: "flex", flexDirection: "column", ml: 3 }}>
-      <FormControlLabel
-        label="Categoría 1"
-        control={<Checkbox checked={checked[0]} onChange={handleChange2} />}
-      />
-      <FormControlLabel
-        label="Categoría 2"
-        control={<Checkbox checked={checked[1]} onChange={handleChange3} />}
-      />
-    </Box>
-  );
 
   return (
     <Container
@@ -56,9 +41,10 @@ const ProductSearchCriteria: React.FC<ProductSearchCriteriaProps> = ({}) => {
         gap: 2,
         mt: 2,
         mx: "auto",
-		width: '25%'
+        width: "25%",
       }}
     >
+      {/* Selector de orden */}
       <FormControl fullWidth>
         <InputLabel variant="standard" htmlFor="uncontrolled-native">
           Ordenar:
@@ -66,7 +52,7 @@ const ProductSearchCriteria: React.FC<ProductSearchCriteriaProps> = ({}) => {
         <NativeSelect
           defaultValue={30}
           inputProps={{
-            name: "age",
+            name: "order",
             id: "uncontrolled-native",
           }}
         >
@@ -76,6 +62,7 @@ const ProductSearchCriteria: React.FC<ProductSearchCriteriaProps> = ({}) => {
         </NativeSelect>
       </FormControl>
 
+      {/* Filtro por categorías */}
       <Accordion>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
@@ -89,40 +76,45 @@ const ProductSearchCriteria: React.FC<ProductSearchCriteriaProps> = ({}) => {
             label="Todas las categorías"
             control={
               <Checkbox
-                checked={checked[0] && checked[1]}
-                indeterminate={checked[0] !== checked[1]}
-                onChange={handleChange1}
+                indeterminate={selectedCategories.length > 0 && selectedCategories.length < categories.length}
+                checked={selectedCategories.length === categories.length}
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    setSelectedCategories(categories.map((category) => category.id));
+                  } else {
+                    setSelectedCategories([]);
+                  }
+                }}
               />
             }
           />
-          {children}
+          {categories.map((category) => (
+            <Box key={category.id} sx={{ display: "flex", flexDirection: "column", ml: 3 }}>
+              <FormControlLabel
+                label={category.name}
+                control={
+                  <Checkbox
+                    checked={selectedCategories.includes(category.id)}
+                    onChange={(e) => handleSelectCategories(e, category.id)}
+                  />
+                }
+              />
+            </Box>
+          ))}
         </AccordionDetails>
       </Accordion>
 
-	  <Accordion>
+      {/* Placeholder para tiendas */}
+      <Accordion>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1-content"
-          id="panel1-header"
+          aria-controls="panel2-content"
+          id="panel2-header"
         >
           <Typography component="span">Tiendas</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          
-
-		<FormControlLabel
-          label="Todas las categorías"
-          control={
-            <Checkbox
-              checked={checked[0] && checked[1]}
-              indeterminate={checked[0] !== checked[1]}
-              onChange={handleChange1}
-            />
-          }
-        />
-        {children}
-
-
+          <Typography variant="body2">Funcionalidad pendiente</Typography>
         </AccordionDetails>
       </Accordion>
     </Container>

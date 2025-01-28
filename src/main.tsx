@@ -5,14 +5,13 @@ import { Provider } from "react-redux";
 import { store } from "./app/store";
 import { ThemeProvider } from "@emotion/react";
 import theme from "./Theme/Theme.ts";
-import { AuthProviderr } from "./Context/AuthProvider.tsx";
 
 createRoot(document.getElementById("root")!).render(
-  <ThemeProvider theme={theme}>
-    <AuthProviderr>
+  <StrictMode>
+    <ThemeProvider theme={theme}>
       <Provider store={store}>
         <App />
       </Provider>
-    </AuthProviderr>
-  </ThemeProvider>
+    </ThemeProvider>
+  </StrictMode>
 );

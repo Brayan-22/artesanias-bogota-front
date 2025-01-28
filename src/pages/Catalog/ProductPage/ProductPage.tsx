@@ -4,7 +4,7 @@ import React from "react";
 import { selectInventoryProduct } from "../../../Features/Inventory/Inventory";
 import { useParams } from "react-router-dom";
 import { useAppSelector } from "../../../app/hooks";
-import ProductGallery from "./ProductGallery";
+import ProductGallery from "../ProductList.tsx";
 import ProductDetails from "./ProductDetails";
 import ProductPurchase from "./ProductPurchase";
 
@@ -36,8 +36,8 @@ const ProductPage: React.FC<ProductPageProps> = () => {
         }}
       >
         {/* Galería de imágenes del producto */}
-        <Box sx={{ flex: 1 }}>
-          <ProductGallery image={product.image} />
+        <Box sx={{ flex: 1, mr: 3 }}>
+          <img src= {product.image}/>
         </Box>
 
         {/* Información del producto */}

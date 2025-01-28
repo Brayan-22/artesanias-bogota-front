@@ -1,7 +1,7 @@
-import { Box, Container } from "@mui/material";
-import Hero from "../../components/Hero/Hero";
+import { Box} from "@mui/material";
 import Populars from "../../components/Populars";
 import PhysicalStores from "./PhysicalStores";
+import Hero from "../../components/Hero";
 
 const HomePage = () => {
   return (
@@ -9,7 +9,6 @@ const HomePage = () => {
       <Hero />
       <Populars />
       <PhysicalStores />
-      {/* <Footer/> */}
     </Box>
   );
 };

@@ -1,14 +1,14 @@
 "use client";
 import { Box } from '@mui/material';
 import React from 'react';
-import { Product } from '../../../Features/Inventory/Inventory';
-import ProductCard from '../../../components/ProductCard';
+import { Product } from '../../Features/Inventory/Inventory';
+import ProductCard from '../../components/ProductCard';
 
-export type ProductGalleryProps = {
+export type ProductListProps = {
 	products: Product[]
 }
 
-const ProductGallery: React.FC<ProductGalleryProps>  = ({products}) => {
+const ProductList: React.FC<ProductListProps>  = ({products}) => {
 	return (
 		<Box sx={{display:'flex', mb:2, mx:'auto', flexWrap:'wrap', justifyContent:'center'}}>
 		{products.map((product) => (
@@ -18,4 +18,4 @@ const ProductGallery: React.FC<ProductGalleryProps>  = ({products}) => {
 	);
 };
 
-export default ProductGallery;
+export default ProductList;
