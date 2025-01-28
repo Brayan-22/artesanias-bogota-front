@@ -21,7 +21,6 @@ COPY tsconfig.node.tsbuildinfo ./
 COPY tsconfig.app.tsbuildinfo ./
 COPY tsconfig.json ./
 COPY vite.config.ts ./
-COPY .env ./
 # Instala las dependencias usando Yarn
 RUN yarn install
 
