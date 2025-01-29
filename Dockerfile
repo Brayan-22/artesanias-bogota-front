@@ -1,40 +1,40 @@
-FROM node:20-alpine AS builder
-WORKDIR /app
-RUN addgroup -S nonroot \
-    && adduser -S nonroot -G nonroot
-RUN apk update
-RUN apk upgrade
-USER nonroot
-# Establece el directorio de trabajo en el contenedor
+FROM node:lts-alpine AS builder
+
+# Establece el directorio de trabajo
 WORKDIR /app
 
+# Crear usuario sin privilegios
+RUN addgroup -S nonroot && adduser -S nonroot -G nonroot
+
+# Como root, copia los archivos y establece permisos
+USER root
 COPY package.json yarn.lock ./
+COPY public ./public
+COPY src ./src
+COPY eslint.config.js ./
+COPY tsconfig*.json ./
+COPY vite.config.ts ./
+COPY index.html ./
+# Establece los permisos correctos
+RUN chown -R nonroot:nonroot /app && \
+    chmod -R 755 /app
 
 # Cambia al usuario sin privilegios
 USER nonroot
 
-# Copia solo los archivos necesarios para la aplicación
-COPY public ./public
-COPY src ./src
-COPY eslint.config.js ./
-COPY tsconfig.node.tsbuildinfo ./
-COPY tsconfig.app.tsbuildinfo ./
-COPY tsconfig.json ./
-COPY vite.config.ts ./
+# Instala dependencias y construye
 RUN yarn install
-
-# Asigna permisos correctos para todos los archivos
-RUN chmod -R 755 /app
-
 RUN yarn run build
 
+# Segunda etapa
 FROM nginx:stable-alpine-slim AS deploy
 
-# Crear un usuario no root para el contenedor de nginx
+# Crear usuario no root para nginx
 RUN addgroup -S nonroot && adduser -S nonroot -G nonroot
 
-# Cambiar a un usuario no root
-USER nonroot
-
-# Copia los archivos generados por el builder
+# Copiar archivos y establecer permisos
 COPY --from=builder /app/dist/ /usr/share/nginx/html/
+RUN chown -R nonroot:nonroot /usr/share/nginx/html
+
+# Cambiar a usuario no root
+USER nonroot
