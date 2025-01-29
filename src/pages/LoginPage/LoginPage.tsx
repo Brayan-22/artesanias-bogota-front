@@ -10,7 +10,6 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import axios from "../../api/axios";
 
 const LOGIN_URL = "http://localhost:3500/auth";
 

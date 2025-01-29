@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Paper,
@@ -19,14 +19,20 @@ import { alpha } from "@mui/material/styles";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { useAppSelector } from "../../app/hooks";
-import {  productDeleted, selectAllProducts } from "./Inventory";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { deleteProductById, findAllProducts, selectAllProducts } from "../Product/Products";
 
-function InventoryTable() {
+function WarehouseTable() {
+  const warehouseId = 1;
   const products = useAppSelector(selectAllProducts);
-  const dispatch = useDispatch();
+
+  
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
+  useEffect(()=>{
+    dispatch(findAllProducts(warehouseId))
+  },[dispatch, warehouseId])
 
   const [selected, setSelected] = useState<number[]>([]);
   const [page, setPage] = useState(0);
@@ -37,7 +43,7 @@ function InventoryTable() {
     name: product.name,
     stock: product.stock,
     price: product.price,
-    category: product.category,
+    category: product.category_id,
     description: product.description,
   }));
 
@@ -77,7 +83,7 @@ function InventoryTable() {
   const deleteProducts = () => {
     if (selected.length === 0) return;
     if (window.confirm(`¿Estás seguro de eliminar los productos seleccionados?`)) {
-      selected.forEach((id) => dispatch(productDeleted(id)));
+      selected.forEach((id) => dispatch(deleteProductById(id)))
       setSelected([]);
     }
   };
@@ -152,7 +158,7 @@ function InventoryTable() {
                     <TableCell>{row.name}</TableCell>
                     <TableCell>{row.stock}</TableCell>
                     <TableCell>{row.price}</TableCell>
-                    <TableCell>{row.category ?row.category.name: "sin asignar" }</TableCell>
+                    <TableCell>{"categoría"}</TableCell>
                     <TableCell>{row.description}</TableCell>
                     <TableCell>
                       <IconButton onClick={() => navigate(`editProduct/${row.id}`)}>
@@ -184,4 +190,4 @@ function InventoryTable() {
   );
 }
 
-export default InventoryTable;
+export default WarehouseTable;

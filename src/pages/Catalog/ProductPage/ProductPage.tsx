@@ -1,10 +1,10 @@
 import { Box, Container, Typography } from "@mui/material";
 import React from "react";
-import { selectInventoryProduct } from "../../../Features/Inventory/Inventory";
 import { useParams } from "react-router-dom";
 import { useAppSelector } from "../../../app/hooks";
 import ProductDetails from "./ProductDetails";
 import ProductPurchase from "./ProductPurchase";
+import { selectProductById } from "../../../Features/Product/Products";
 
 export type ProductPageProps = {
   // Define any additional props if necessary
@@ -13,7 +13,7 @@ export type ProductPageProps = {
 const ProductPage: React.FC<ProductPageProps> = () => {
   const { productId } = useParams();
   const product = useAppSelector((store) =>
-    selectInventoryProduct(store, parseInt(productId || "0"))
+    selectProductById(store, parseInt(productId || "0"))
   );
 
   if (!product) {

@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import React from 'react';
-import { Product } from '../../Features/Inventory/Inventory';
+import { Product } from '../../Features/Product/Products';
 import ProductCard from '../../components/ProductCard';
 
 export type ProductListProps = {

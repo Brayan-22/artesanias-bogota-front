@@ -5,10 +5,10 @@ import Catalog from "./pages/Catalog/Catalog";
 import HomePage from "./pages/Home/HomePage";
 import NavBar from "./components/NavBar";
 import ProductPage from "./pages/Catalog/ProductPage/ProductPage";
-import ProductForm from "./Features/Inventory/ProductForm";
+import ProductForm from "./Features/Product/ProductForm";
 import LoginPage from "./pages/LoginPage/LoginPage";
-import InventoryPage from "./Features/Inventory/InventoryPage";
 import CategoriesPage from "./Features/Categories/CategoriesPage";
+import WarehousePage from "./Features/Warehouse/WarehousePage";
 
 function App() {
   return (
@@ -24,10 +24,15 @@ function App() {
           <Route path=":productId" element={<ProductPage />} /> {/* Página de producto individual */}
         </Route>
 
-        {/* Inventario */}
-        <Route path="/inventory" element={<InventoryPage />} />
+        {/* Warehouse */}
+        <Route path="/inventory" element={<WarehousePage/>} />
         <Route path="/inventory/createProduct" element={<ProductForm />} />
         <Route path="/inventory/editProduct/:id" element={<ProductForm />} />
+
+
+        {/* Inventory */}
+
+
         {/* Categorías */}
         <Route path="/categories" element={<CategoriesPage/>} /> {/*Crear categoryía*/}
         <Route path="/categories/:id" element={<CategoriesPage/>} />{/*Editar y eliminar categoría  */}
