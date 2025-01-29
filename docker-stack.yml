@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  artesaniasfrontend:
+    user: root
+    image: brayan22/artesanias-frontend:latest
+    volumes:
+      - .:/app
+    networks:
+      - reverse-proxy
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+      labels:
+        - "traefik.enable=true"
+        - "traefik.docker.network=reverse-proxy"
+        - "traefik.http.routers.artesaniasfrontend.entrypoints=websecure"
+        - "traefik.http.routers.artesaniasfrontend.rule=Host(`artesaniasbogota.${DOMAIN}`)"
+        - "traefik.http.routers.artesaniasfrontend.service=artesaniasfrontend"
+        - "traefik.http.services.artesaniasfrontend.loadbalancer.server.port=80"
+        - "traefik.http.routers.artesaniasfrontend.tls=true"
+        - "traefik.http.routers.jenkins.tls.certresolver=cloudflare"
+        - "traefik.http.routers.jenkins.tls.domains[0].main=${DOMAIN}"
+        - "traefik.http.routers.jenkins.tls.domains[0].sans=*.${DOMAIN}"
+networks:
+  reverse-proxy:
+    external: true
