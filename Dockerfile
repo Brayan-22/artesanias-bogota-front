@@ -14,7 +14,6 @@ COPY package.json yarn.lock ./
 USER nonroot
 
 # Copia solo los archivos necesarios para la aplicación
-# Copia los archivos necesarios
 COPY public ./public
 COPY src ./src
 COPY eslint.config.js ./
@@ -31,4 +30,11 @@ RUN yarn run build
 
 FROM nginx:stable-alpine-slim AS deploy
 
+# Crear un usuario no root para el contenedor de nginx
+RUN addgroup -S nonroot && adduser -S nonroot -G nonroot
+
+# Cambiar a un usuario no root
+USER nonroot
+
+# Copia los archivos generados por el builder
 COPY --from=builder /app/dist/ /usr/share/nginx/html/
