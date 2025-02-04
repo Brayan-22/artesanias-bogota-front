@@ -1,119 +1,106 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { RootState } from "../../app/store";
-import api from "../../api/axios";
+import { createEntityAdapter, createSelector, EntityState } from "@reduxjs/toolkit";
 import { STATE_STATUS } from "../responseStatus";
+import { apiSlice } from "../api/apiSlice";
+import { RootState } from "../../app/store";
 
-enum ACTIONS {
-  FIND_ALL_PRODUCTS = "products/findAllProducts",
-  FIND_ALL_PRODUCTS_BY_WAREHOUSE_ID = "products/findAllProductsByWarehouseId",
-  SAVE_PRODUCT = "products/saveProduct",
-  DELETE_PRODUCT = "products/deleteProduct",
-}
+
 
 export interface Product {
-  id: number;
+  id: string;
   name: string;
   stock: number;
-  description: string; 
+  description: string;
   price: number;
   category_id: number | null;
   image: string;
-  warehouse_id: number;
-  status: "available" | "out_of_stock"; 
-  created_at: string; 
-  updated_at: string; 
+  warehouse_id: string;
+  status: "available" | "out_of_stock";
+  created_at: string;
+  updated_at: string;
 }
 
-interface ProductsState {
-  products: Product[]; 
-  status: STATE_STATUS; 
-  error: string | null; 
+export interface NewProduct {
+  name: string;
+  stock: number;
+  description: string;
+  price: number;
+  category_id: number | null;
+  image: string;
+  warehouse_id: string;
+  status: "available" | "out_of_stock";
+  created_at: string;
+  updated_at: string;
 }
 
-const initialState: ProductsState = {
-  products: [],
+interface ProductsState extends EntityState<Product, string> {
+  status: STATE_STATUS;
+  error: string | null;
+}
+
+const productAdapter = createEntityAdapter<Product>({});
+
+ // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
+const initialState: ProductsState = productAdapter.getInitialState({
   status: STATE_STATUS.IDLE,
   error: null,
-};
-
-export const findAllProducts = createAsyncThunk(
-  ACTIONS.FIND_ALL_PRODUCTS,
-  async (warehouseId: number) => {
-   try{
-    let url = "/products";
-    if (warehouseId) {
-      url = `products`;
-      console.log("productos con wirehouse id igual a : " + warehouseId);
-      
-    }
-    const response = await api.get(url);
-    return response.data as Product[];
-   }catch(err: any){
-      throw err.message;
-   }
-  }
-);
-
-export const deleteProductById = createAsyncThunk(
-  ACTIONS.DELETE_PRODUCT,
-  async(productId: number) => {
-    try{
-      const response = await api.delete(`products/${productId}`)
-      if(response.status === 200) return productId;
-      return `${response.status}: ${response.statusText}`
-
-    }catch(err: any){
-      return err.message;
-    }
-  }
-
-)
-
-
-const productsSlice = createSlice({
-  name: "inventory",
-  initialState,
-  reducers: {},
-  extraReducers: (builder) => {
-    builder
-      /* Find all products */
-      .addCase(findAllProducts.pending, (state) => {
-        state.status = STATE_STATUS.LOADING;
-      })
-      .addCase(findAllProducts.fulfilled, (state, action: PayloadAction<Product[]>) => {
-        state.status = STATE_STATUS.SUCCEEDED;
-        state.products = action.payload; 
-      })
-      .addCase(findAllProducts.rejected, (state, action) => {
-        state.status = STATE_STATUS.FAILED;
-        state.error = action.error.message || "Failed to fetch products";
-      })
-
-     /* Delete product */
-     .addCase(deleteProductById.fulfilled, (state, action) =>{
-      if(!action.payload){
-        console.log('Delete could not complete');
-        console.log(action.payload);
-        return;
-      }
-      const productId = action.payload;
-      const products = state.products.filter(p => p.id !== productId);
-      state.products = products;
-    })
-  },
 });
 
-export default productsSlice.reducer;
+export const apiSliceWithProducts = apiSlice.injectEndpoints({
+  endpoints: (builder) => ({
+    getProducts: builder.query<Product[], void>({
+      query: () => "/products",
+      providesTags: ["Products", "Categories"],
+    }),
+    getProduct: builder.query<Product, string>({
+      query: (productId) => `/products/${productId}`,
+    }),
+    addNewProduct: builder.mutation<Product, NewProduct>({
+      query: (initialProduct) => ({
+        url: "/products",
+        method: "POST",
+        body: initialProduct,
+      }),
+      invalidatesTags: ["Products"],
+    }),
+    updateProduct: builder.mutation<Product, Product>({
+      query: (editedProduct) => ({
+        url: `/products/${editedProduct.id}`,
+        method: "PATCH",
+        body: editedProduct,
+      }),
+      invalidatesTags: ["Products"],
+    }),
+    deleteProduct: builder.mutation<Product, string>({
+      query: (productId) => ({
+        url: `/products/${productId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Products"],
+    }),
+  }),
+});
 
-export const selectAllProducts = (state: RootState) => state.products.products;
+export const {
+  useGetProductsQuery,
+  useGetProductQuery,
+  useAddNewProductMutation,
+  useUpdateProductMutation,
+  useDeleteProductMutation,
+} = apiSliceWithProducts;
 
-export const selectProductById = (state: RootState, productId: number) => {
-  return state.products.products.find((product) => product.id === productId);
-};
+const emptyProducts: Product[] = []
 
-export const selectAllProductsByWarehouseId = (state: RootState, warehouseId: number) => {
-  return state.products.products.filter(
-    (product) => product.warehouse_id === warehouseId
-  ) || [];
-};
+export const selectProductsResult = apiSliceWithProducts.endpoints.getProducts.select();
+
+export const selectAllProducts = createSelector(
+  selectProductsResult,
+  productsResult => productsResult?.data ?? emptyProducts
+)
+
+export const selectProductById = createSelector(
+  selectAllProducts,
+  (_state: RootState, productId: string) => productId,
+  (products, productId) => products.find(product => product.id === productId)
+)
 

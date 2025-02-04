@@ -1,4 +1,4 @@
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Paper,
@@ -18,19 +18,17 @@ import {
 import { alpha } from "@mui/material/styles";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { Link, useParams } from "react-router-dom";
-import {
-  useGetProductsQuery,
-} from "../Product/Products";
+import { Link } from "react-router-dom";
+import { useDeleteProductMutation, useGetProductsQuery } from "../Product/Products";
 
-const WarehouseTable = () => {
-   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-expect-error
-  const { warehouseId } = useParams();
-  const {data: products = [] } = useGetProductsQuery()
+const InventoryGeneralTable = () => {
+  const { data: products = [] } = useGetProductsQuery();
+  const [deleteProduct] = useDeleteProductMutation();
 
   const [selected, setSelected] = useState<string[]>([]);
+    
   const [page, setPage] = useState(0);
+
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const rows = products.map((product) => ({
@@ -40,6 +38,7 @@ const WarehouseTable = () => {
     price: product.price,
     category: product.category_id,
     description: product.description,
+    warehouse_id: product.warehouse_id,
   }));
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,24 +76,21 @@ const WarehouseTable = () => {
     setPage(0);
   };
 
-  /* const deleteProducts = () => {
+  const deleteProducts = () => {
     if (selected.length === 0) return;
     if (
       window.confirm(`¿Estás seguro de eliminar los productos seleccionados?`)
     ) {
-      selected.forEach((id) => dispatch(deleteProductById(id)));
+      selected.forEach((_id) => deleteProduct(_id));
       setSelected([]);
     }
-  }; */
+  };
 
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
-    if(products.length === 0){
-      <h1>No hay productos para enseñar :c</h1>
-    }
   return (
-    <Box sx={{ width: "80%" }}>
+    <Box sx={{ width: "100%", mr: 2 }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
         <Toolbar
           sx={{
@@ -131,7 +127,7 @@ const WarehouseTable = () => {
           )}
           {selected.length > 0 ? (
             <Tooltip title="Eliminar">
-              <IconButton /* onClick={deleteProducts} */>
+              <IconButton onClick={deleteProducts}>
                 <DeleteIcon />
               </IconButton>
             </Tooltip>
@@ -158,6 +154,7 @@ const WarehouseTable = () => {
                   "Precio",
                   "Categoría",
                   "Descripción",
+                  "Warehouse Id",
                 ].map((head) => (
                   <TableCell key={head} align="left">
                     {head}
@@ -189,6 +186,7 @@ const WarehouseTable = () => {
                       <TableCell>{row.price}</TableCell>
                       <TableCell>{"categoría"}</TableCell>
                       <TableCell>{row.description}</TableCell>
+                      <TableCell>{row.warehouse_id}</TableCell>
                       <TableCell>
                         <Link to={`editProduct/${row.id}`}>
                           <IconButton>
@@ -221,4 +219,4 @@ const WarehouseTable = () => {
   );
 };
 
-export default WarehouseTable;
+export default InventoryGeneralTable;

@@ -1,16 +1,22 @@
 import { configureStore } from "@reduxjs/toolkit";
-import productReducer from "../Features/Product/Products";
-import warehouseReducer from "../Features/Warehouse/Warehouses";
 import cartReducer from "../Features/Cart/Cart";
-import categoryReducer from "../Features/Categories/Category";
+import { apiSlice } from "../Features/api/apiSlice";
+import { listenerMiddleware } from "./listenerMiddleware";
+import authReducer from "../Features/Authentication/AuthSlice"
 
 export const store = configureStore({
   reducer: {
-    products: productReducer,
-    warehouse: warehouseReducer,
-    category: categoryReducer,
+    auth: authReducer,
     cart: cartReducer,
+    [apiSlice.reducerPath] : apiSlice.reducer
   },
+  middleware: getDefaultMiddleware=> 
+    getDefaultMiddleware()
+    .prepend(listenerMiddleware.middleware)
+    .concat(apiSlice.middleware),
+    
+  devTools: true
+  
 });
 
 export type AppStore = typeof store;

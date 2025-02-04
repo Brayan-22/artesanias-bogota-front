@@ -1,27 +1,28 @@
-import { useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import {
-  findAllProducts,
-  selectAllProducts,
-} from "../../Features/Product/Products.ts";
+import { useGetProductsQuery } from "../../Features/Product/Products.ts";
 import { Container } from "@mui/material";
 import ProductList from "./ProductList.tsx";
+import SearchCriteria from "./SearchCriteria.tsx";
 
 const Catalog = () => {
-  const dispatch = useAppDispatch();
-  const products = useAppSelector(selectAllProducts);
-  // const [products, setProducts] = useState<Product[]>(initialProducts);
+  const {
+    data: products = [],
+    isLoading,
+    isSuccess,
+    isError,
+  } = useGetProductsQuery();
 
-  useEffect(() => {
-    dispatch(findAllProducts());
-  }, [products]);
-
-  return (
-    <Container sx={{ display: "flex" }}>
-      {/*  <ProductSearchCriteria /> */}
-      <ProductList products={products} />
-    </Container>
-  );
+  if (isLoading) {
+    return <h1>Loading...</h1>;
+  } else if (isSuccess) {
+    return (
+      <Container sx={{ display: "flex" }}>
+        <SearchCriteria />
+        <ProductList products={products} />
+      </Container>
+    );
+  } else if (isError) {
+    return <div>Ha ocurrido un error al momento de cargar los productos</div>;
+  }
 };
 
 export default Catalog;

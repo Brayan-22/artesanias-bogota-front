@@ -1,97 +1,185 @@
 {
-    "warehouses": [
-      {
-        "id": 1,
-        "name": "Bodega Central",
-        "location": "Bogotá, Cundinamarca",
-        "manager_id": "admin1"
-      },
-      {
-        "id": 2,
-        "name": "Bodega Norte",
-        "location": "Chía, Cundinamarca",
-        "manager_id": "admin2"
-      },
-      {
-        "id": 3,
-        "name": "Bodega Sur",
-        "location": "Soacha, Cundinamarca",
-        "manager_id": "admin3"
-      }
-    ],
-    "products": [
-      {
-        "id": 1,
-        "name": "Sombrero Vueltiao",
-        "description": "Sombrero típico colombiano hecho a mano.",
-        "price": 120000,
-        "stock": 15,
-        "warehouse_id": 1,
-        "status": "available",
-        "created_at": "2025-01-01T10:00:00Z",
-        "updated_at": "2025-01-20T15:30:00Z",
-        "image": "/src/assets/images/product1.jpg",
-        "category_id": 1
-      },
-      {
-        "id": 2,
-        "name": "Mochila Wayuu",
-        "description": "Artesanía tradicional tejida por la comunidad Wayuu.",
-        "price": 80000,
-        "stock": 10,
-        "warehouse_id": 2,
-        "status": "available",
-        "created_at": "2025-01-05T12:30:00Z",
-        "updated_at": "2025-01-20T15:30:00Z",
-        "image": "/src/assets/images/product1.jpg",
-        "category_id": 2
-      },
-      {
-        "id": 3,
-        "name": "Ruana de lana",
-        "description": "Prenda tradicional hecha con lana natural.",
-        "price": 150000,
-        "stock": 5,
-        "warehouse_id": 1,
-        "status": "out_of_stock",
-        "created_at": "2025-01-10T09:00:00Z",
-        "updated_at": "2025-01-18T14:00:00Z",
-        "image": "/src/assets/images/product1.jpg",
-        "category_id": 3
-      },
-      {
-        "id": 4,
-        "name": "Collar de chaquira",
-        "description": "Collar hecho a mano con cuentas de chaquira.",
-        "price": 45000,
-        "stock": 25,
-        "warehouse_id": 3,
-        "status": "available",
-        "created_at": "2025-01-08T11:00:00Z",
-        "updated_at": "2025-01-20T12:00:00Z",
-        "image": "/src/assets/images/product1.jpg",
-        "category_id": 4
-      },
-      {
-        "id": 5,
-        "name": "Canasto de fique",
-        "description": "Canasto tejido a mano con fibra natural de fique.",
-        "price": 60000,
-        "stock": 30,
-        "warehouse_id": 2,
-        "status": "available",
-        "created_at": "2025-01-12T13:00:00Z",
-        "updated_at": "2025-01-20T16:00:00Z",
-        "image": "/src/assets/images/product1.jpg",
-        "category_id": 5
-      }
-    ],
-    "categories": [
-      { "id": 1, "name": "Sombreros" },
-      { "id": 2, "name": "Mochilas" },
-      { "id": 3, "name": "Ruanas" },
-      { "id": 4, "name": "Collares" },
-      { "id": 5, "name": "Canastos" }
-    ]
-  }
-  
+  "warehouses": [
+    {
+      "id": "1",
+      "id_location": 1234,
+      "shop_id": "1",
+      "name": "Bodega Central",
+      "is_central": true
+    }
+  ],
+  "products": [
+    {
+      "id": "1",
+      "name": "Sombreros 4",
+      "description": "Artesanía tradicional tejida por la comunidad Wayuu.",
+      "price": 80000,
+      "stock": 10,
+      "warehouse_id": "2",
+      "status": "available",
+      "created_at": "2025-01-05T12:30:00Z",
+      "updated_at": "2025-02-02T16:24:00.535Z",
+      "image": "/src/assets/images/product1.jpg",
+      "category_id": 1
+    },
+    {
+      "id": "2",
+      "name": "Artesanía wayu",
+      "description": "Artesanía tradicional tejida por la comunidad Wayuu.",
+      "price": 80000,
+      "stock": 88,
+      "status": "available",
+      "created_at": "2025-01-05T12:30:00Z",
+      "updated_at": "2025-01-31T03:43:39.713Z",
+      "image": "/src/assets/images/product1.jpg",
+      "category_id": 1
+    },
+    {
+      "id": "3",
+      "name": "Ruana de lana",
+      "description": "Prenda tradicional hecha con lana natural.",
+      "price": 150000,
+      "stock": 5,
+      "status": "out_of_stock",
+      "created_at": "2025-01-10T09:00:00Z",
+      "updated_at": "2025-01-18T14:00:00Z",
+      "image": "/src/assets/images/product1.jpg",
+      "category_id": 3
+    },
+    {
+      "id": "4",
+      "name": "Collar de chaquira",
+      "description": "Collar hecho a mano con cuentas de chaquira.",
+      "price": 45000,
+      "stock": 25,
+      "status": "available",
+      "created_at": "2025-01-08T11:00:00Z",
+      "updated_at": "2025-01-20T12:00:00Z",
+      "image": "/src/assets/images/product1.jpg",
+      "category_id": 4
+    },
+    {
+      "id": "5",
+      "name": "Canasto de fique",
+      "description": "Canasto tejido a mano con fibra natural de fique.",
+      "price": 60000,
+      "stock": 30,
+      "status": "available",
+      "created_at": "2025-01-12T13:00:00Z",
+      "updated_at": "2025-01-20T16:00:00Z",
+      "image": "/src/assets/images/product1.jpg",
+      "category_id": 5
+    },
+    {
+      "id": "b0e8",
+      "name": "",
+      "stock": 0,
+      "price": 0,
+      "category_id": 0,
+      "description": "",
+      "image": "",
+      "created_at": "2025-02-02T21:46:42.823Z",
+      "updated_at": "2025-02-02T21:46:42.823Z",
+      "warehouse_id": "1"
+    }
+  ],
+  "categories": [
+    {
+      "id": "1",
+      "name": "Sombreros",
+      "description": " any description"
+    },
+    {
+      "id": "2",
+      "name": "Mochilas",
+      "description": " any description"
+    },
+    {
+      "id": "3",
+      "name": "Ruanas",
+      "description": " any description"
+    },
+    {
+      "id": "4",
+      "name": "Collares",
+      "description": " any description"
+    }
+  ],
+  "shops": [
+    {
+      "id": "1",
+      "name": "Todo a 1000",
+      "location_id": 123
+    }
+  ],
+  "inventories": [
+    {
+      "id": "1",
+      "warehouse_id": "1",
+      "location_id": 123,
+      "products": [
+        {
+          "id": "1",
+          "name": "Sombreros 4",
+          "description": "Artesanía tradicional tejida por la comunidad Wayuu.",
+          "price": 80000,
+          "stock": 10,
+          "warehouse_id": "2",
+          "status": "available",
+          "created_at": "2025-01-05T12:30:00Z",
+          "updated_at": "2025-02-02T16:24:00.535Z",
+          "image": "/src/assets/images/product1.jpg",
+          "category_id": 1
+        },
+        {
+          "id": "2",
+          "name": "Artesanía wayu",
+          "description": "Artesanía tradicional tejida por la comunidad Wayuu.",
+          "price": 80000,
+          "stock": 88,
+          "status": "available",
+          "created_at": "2025-01-05T12:30:00Z",
+          "updated_at": "2025-01-31T03:43:39.713Z",
+          "image": "/src/assets/images/product1.jpg",
+          "category_id": 1
+        },
+        {
+          "id": "3",
+          "name": "Ruana de lana",
+          "description": "Prenda tradicional hecha con lana natural.",
+          "price": 150000,
+          "stock": 5,
+          "status": "out_of_stock",
+          "created_at": "2025-01-10T09:00:00Z",
+          "updated_at": "2025-01-18T14:00:00Z",
+          "image": "/src/assets/images/product1.jpg",
+          "category_id": 3
+        },
+        {
+          "id": "4",
+          "name": "Collar de chaquira",
+          "description": "Collar hecho a mano con cuentas de chaquira.",
+          "price": 45000,
+          "stock": 25,
+          "status": "available",
+          "created_at": "2025-01-08T11:00:00Z",
+          "updated_at": "2025-01-20T12:00:00Z",
+          "image": "/src/assets/images/product1.jpg",
+          "category_id": 4
+        },
+        {
+          "id": "5",
+          "name": "Canasto de fique",
+          "description": "Canasto tejido a mano con fibra natural de fique.",
+          "price": 60000,
+          "stock": 30,
+          "status": "available",
+          "created_at": "2025-01-12T13:00:00Z",
+          "updated_at": "2025-01-20T16:00:00Z",
+          "image": "/src/assets/images/product1.jpg",
+          "category_id": 5
+        }
+      ]
+    }
+  ]
+}
