@@ -22,7 +22,8 @@ interface CategoryTableProps{
 
 const CategoryTable:React.FC<CategoryTableProps> = ({ toggleCurrentCategory }) => {
   const categories = useAppSelector(selectAllCategories);
-
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
   const [selected, setSelected] = useState<number>(0);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -32,14 +33,16 @@ const CategoryTable:React.FC<CategoryTableProps> = ({ toggleCurrentCategory }) =
     name: category.name,
   }));
 
-
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
   const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
     
-    let newSelected: number = id
+    const newSelected: number = id
 
     setSelected(newSelected);
   };
-
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };

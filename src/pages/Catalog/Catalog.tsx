@@ -7,6 +7,7 @@ import {
 import { Container } from "@mui/material";
 import ProductList from "./ProductList.tsx";
 
+
 const Catalog = () => {
   const dispatch = useAppDispatch();
   const products = useAppSelector(selectAllProducts);

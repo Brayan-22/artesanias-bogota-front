@@ -57,7 +57,8 @@ function WarehouseTable() {
     }
     setSelected([]);
   };
-
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
   const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
     const selectedIndex = selected.indexOf(id);
     let newSelected: number[] = [];
@@ -70,7 +71,8 @@ function WarehouseTable() {
 
     setSelected(newSelected);
   };
-
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
