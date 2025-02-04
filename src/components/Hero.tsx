@@ -1,8 +1,10 @@
 import { Button, Container } from "@mui/material";
-import heroImage from "/src/assets/images/home/hero-image.jpg"; 
 import { Link, useNavigate } from "react-router-dom";
 
 
+const heroImage = new URL("images/home/hero-image.jpg",import.meta.env.VITE_CLOUD_FRONT_URL).href
+
+console.log(heroImage);
 
 
 const Hero = ({}) => {
