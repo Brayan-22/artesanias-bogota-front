@@ -8,28 +8,21 @@ import {
   Stack,
   NativeSelect,
 } from "@mui/material";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { useAppSelector, useAppDispatch } from "../../app/hooks";
-import { selectAllCategories } from "../Categories/Category";
-import { selectProductById } from "./Products";
-
-const CREATE = "/inventory/createProduct";
-const EDIT = "/inventory/editProduct";
+import { useParams, useNavigate, Link, useLocation } from "react-router-dom";
+import { useAddNewProductMutation, useGetProductQuery, useUpdateProductMutation } from "./Products";
+import { useGetCategoriesQuery } from "../Categories/Category";
 
 const ProductForm = () => {
-  const { id } = useParams();
+  const { warehouseId, productId } = useParams();
+
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-  const { pathname } = useLocation();
+  const path = useLocation().pathname;
 
-  const product = useAppSelector((state) =>
-    selectProductById(state, Number(id))
-  );
+  const { data: product } = useGetProductQuery(productId!);
+  const [addNewProduct] = useAddNewProductMutation()
+  const [updateProduct] = useUpdateProductMutation()
 
-  const categories = useAppSelector(selectAllCategories);
-  console.log(pathname.includes(EDIT));
-
-  console.log("este es el producto" + product);
+  const { data: categories = [] } = useGetCategoriesQuery();
 
   const [preview, setPreview] = useState<string>(product?.image || "");
 
@@ -37,16 +30,14 @@ const ProductForm = () => {
     name: product?.name || "",
     stock: product?.stock || 0,
     price: product?.price || 0,
-    categoryId: product?.category_id || 0,
+    category_id: product?.category_id || 0,
     description: product?.description || "",
-    image: product?.image || "", 
-    createdAt: product?.created_at || "",
-    updatedAt: product?.updated_at || ""
+    image: product?.image || "",
+    created_at: product?.created_at || "",
+    updated_at: product?.updated_at || "",
+    warehouse_id: warehouseId || "",
+    status: product?.status || "out_of_stock",
   });
-
-  if (!product && pathname.includes(EDIT)) {
-    return <Typography variant="h6">{"Producto no encontrado :("}</Typography>;
-  }
 
   const handleInputChange = (
     e: React.ChangeEvent<
@@ -55,15 +46,22 @@ const ProductForm = () => {
   ) => {
     const { name, value } = e.target;
 
-    setFormState({
-      ...formState,
-      [name]:
-        name === "stock" || name === "price"
-          ? Number(value)
-          : name === "category"
-          ? categories.find((c) => c.id === Number(value))
-          : value,
-    });
+    if (name === "stock" || name === "price") {
+      if (value === "") {
+        setFormState({ ...formState, [name]: "" });
+        return;
+      }
+      if (!/^[0-9]\d*$/.test(value)) {
+        return;
+      }
+      if (!/^\d+(\.\d+)?$/.test(value)) {
+        return;
+      }
+      setFormState({ ...formState, [name]: Number(value) });
+      return;
+    }
+
+    setFormState({ ...formState, [name]: value });
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,19 +82,23 @@ const ProductForm = () => {
     }
   };
 
-  const addProduct = () => {
-    
+   const handleCreateProduct = async() => {
+    await addNewProduct({...formState})
   };
 
-  const editProduct = () => {
-    
+  const handleEditProduct = async () => {
+    productId && await updateProduct({...formState, id:  productId})
   };
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+ 
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    pathname === CREATE ? addProduct() : editProduct();
-    navigate("/inventory"); // Navigate back to the inventory page
+    !product ? handleCreateProduct() : handleEditProduct();
+    navigate(`../products`);
   };
+
+  if (!product && !path.includes("createProduct")) {
+    return <Typography variant="h6">{"Producto no encontrado :("}</Typography>;
+  }
 
   return (
     <Paper
@@ -104,9 +106,9 @@ const ProductForm = () => {
       sx={{ padding: 4, maxWidth: 600, margin: "auto", mt: 5 }}
     >
       <Typography variant="h5" gutterBottom>
-        {pathname === CREATE ? "Crear Producto" : "Editar Producto"}
+        {!product ? "Crear Producto" : "Editar Producto"}
       </Typography>
-      <Box component="form" onSubmit={handleSubmit} noValidate>
+      <Box component="form"  onSubmit={handleSubmit}  noValidate>
         <Stack spacing={2}>
           <Box
             sx={{
@@ -166,8 +168,8 @@ const ProductForm = () => {
           </Stack>
           <NativeSelect
             sx={{ mb: 5 }}
-            name="category"
-            value={formState.categoryId ? formState.categoryId : ""}
+            name="category_id"
+            value={formState.category_id ? formState.category_id : ""}
             onChange={handleInputChange}
           >
             {categories.map((category) => (
@@ -188,15 +190,13 @@ const ProductForm = () => {
         </Stack>
         <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
           <Button variant="contained" color="primary" type="submit">
-            {pathname === CREATE ? "Crear Producto" : "Editar Producto"}
+            {!product ? "Crear Producto" : "Editar Producto"}
           </Button>
-          <Button
-            variant="outlined"
-            color="secondary"
-            onClick={() => navigate("/inventory")}
-          >
-            Cancelar
-          </Button>
+          <Link to={`../products`}>
+            <Button variant="outlined" color="secondary">
+              Cancelar
+            </Button>
+          </Link>
         </Box>
       </Box>
     </Paper>

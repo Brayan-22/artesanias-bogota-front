@@ -12,7 +12,8 @@ export interface CurrentCategory {
 const defaultCategory: CurrentCategory = {
   category: {
     id: 0,
-    name: ""
+    name: "",
+    description: ""
   }
 };
 
@@ -25,13 +26,13 @@ const CategoriesPage = () => {
 
     if (currentCategory.category === null) {
       setCurrentCategory({ category });
-      navigate(`/categories/${category.id}`);
+      navigate(`/managerInventory/categories/${category.id}`);
     } else if (currentCategory.category?.id === category.id) {
       setCurrentCategory(defaultCategory);
-      navigate(`/categories`);
+      navigate(`/managerInventory/categories`);
     } else {
       setCurrentCategory({ category });
-      navigate(`/categories/${category.id}`);
+      navigate(`/managerInventory/categories/${category.id}`);
     }
   };
 
@@ -42,6 +43,8 @@ const CategoriesPage = () => {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
+        marginLeft:'auto',
+        marginRight:'auto'
       }}
     >
       <CategoryForm  />

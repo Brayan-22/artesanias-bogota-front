@@ -1,51 +1,99 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import {
+  createEntityAdapter,
+  createSelector,
+  EntityState,
+} from "@reduxjs/toolkit";
+import { STATE_STATUS } from "../responseStatus";
+import { apiSlice } from "../api/apiSlice";
 import { RootState } from "../../app/store";
 
 export interface Category {
   id: number;
   name: string;
+  description: string;
 }
 
-const initialState: Category[] = [
-  { id: 1, name: "Cerámica" },
-  { id: 2, name: "Madera" },
-  { id: 3, name: "Tejidos" },
-  { id: 4, name: "Joyería artesanal" },
-  { id: 5, name: "Vajillas y utensilios" },
-  { id: 6, name: "Cestas y canastos" },
-];
+export interface NewCategory {
+  name: string;
+  description: string;
+}
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
+interface CategoryState extends EntityState<Category, number> {
+  categories: Category[];
+  status: STATE_STATUS;
+  error: string | null;
+}
 
-const categorySlice = createSlice({
-  name: "inventory",
-  initialState,
-  reducers: {
-    categoryCreated: (state, action: PayloadAction<Category>) => {
-      state.push(action.payload);
-    },
-    categoryEdited: (state, action: PayloadAction<Category>) => {
-      const category = action.payload;
-      const existingItemIndex = state.findIndex((c) => c.id === category.id);
-      if (existingItemIndex !== -1) {
-        state[existingItemIndex].name = category.name;
-      }
-    },
-    categoryDeleted: (state, action: PayloadAction<number>) => {
-      state = state.filter((category) => category.id != action.payload);
-    },
-  },
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
+const categoryAdapter = createEntityAdapter<Category>({});
+
+
+/* const initialState: CategoryState = categoryAdapter.getInitialState({
+  status: STATE_STATUS.IDLE,
+  error: null,
+}); */
+
+export const apiSliceWithCategories = apiSlice.injectEndpoints({
+  endpoints: (builder) => ({
+    getCategories: builder.query<Category[], void>({
+      query: () => "/categories",
+      providesTags: ['Categories'],
+    }),
+    getCategory: builder.query<Category, number>({
+      query: (categoryId) => `/categories/${categoryId}`,
+    }),
+    addNewCategory: builder.mutation<Category, NewCategory>({
+      query: (initialCategory) => ({
+        url: "/categories",
+        method: "POST",
+        body: initialCategory,
+      }),
+      invalidatesTags: ['Categories'],
+    }),
+    updateCategory: builder.mutation<Category, Category>({
+      query: (editedCategory) => ({
+        url: `/categories/${editedCategory.id}`,
+        method: "PATCH",
+        body: editedCategory,
+      }),
+      invalidatesTags: ['Categories'],
+    }),
+    deleteCategory: builder.mutation<Category, string>({
+      query: (categoryId) => ({
+        url: `/categorys/${categoryId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ['Categories'],
+    }),
+  }),
 });
 
-export default categorySlice.reducer;
 
-export const {
-  
-  categoryCreated,
-  categoryEdited,
-  categoryDeleted,
-} = categorySlice.actions;
+export const{
+  useGetCategoriesQuery,
+  useGetCategoryQuery,
+  useAddNewCategoryMutation,
+  useUpdateCategoryMutation,
+  useDeleteCategoryMutation
+} = apiSliceWithCategories
+
+export const selectCategoriesResult = apiSliceWithCategories.endpoints.getCategories.select()
 
 
-export const selectAllCategories = (state: RootState) =>  state.category
+const emptyCategories: Category[] = []
 
-export const selectCategoryById = (state: RootState, id: number) => state.category.find(c => c.id ===  id)
+export const selectCategorysResult = apiSliceWithCategories.endpoints.getCategories.select();
 
+export const selectAllcategoriess = createSelector(
+  selectCategorysResult,
+  categorysResult => categorysResult?.data ?? emptyCategories
+)
+
+
+export const selectcategoryById = createSelector(
+  selectAllcategoriess,
+  (_state: RootState, categoryId: number) => categoryId,
+  (categories, categoryId) => categories.find(category => category.id === categoryId)
+)

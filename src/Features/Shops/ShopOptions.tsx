@@ -9,33 +9,31 @@ import {
   ListItemText,
 } from "@mui/material";
 import { Link, useParams } from "react-router-dom";
-const WarehouseDashBoard = () => {
-   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-expect-error
-  const {warehouseId} = useParams();
+const shopOptions = () => {
+  const {shopId} = useParams();
   return (
     <Box
       sx={{ width: "100%", maxWidth: 150, bgcolor: "background.paper", mr: 2 }}
     >
       <nav aria-label="main mailbox folders">
         <List>
-          <Link to={`products`}>
+          <Link to={`../shops/${shopId}`}>
             <ListItem disablePadding>
               <ListItemButton>
                 <ListItemIcon>
                   <InventoryIcon />
                 </ListItemIcon>
-                <ListItemText primary="Productos" />
+                <ListItemText primary="Almacenes" />
               </ListItemButton>
             </ListItem>
           </Link>
-          <Link to={`products/createProduct`}>
+          <Link to={`../shops/${shopId}/createWarehouse`}>
             <ListItem disablePadding>
               <ListItemButton>
                 <ListItemIcon>
                   <AddIcon/>
                 </ListItemIcon>
-                <ListItemText primary="Agregar producto" />
+                <ListItemText primary="Agregar Almacen" />
               </ListItemButton>
             </ListItem>
           </Link>
@@ -46,4 +44,4 @@ const WarehouseDashBoard = () => {
   );
 };
 
-export default WarehouseDashBoard;
+export default shopOptions;

@@ -1,51 +1,56 @@
 import { Box, Container, Typography } from "@mui/material";
-import React from "react";
 import { useParams } from "react-router-dom";
-import { useAppSelector } from "../../../app/hooks";
 import ProductDetails from "./ProductDetails";
 import ProductPurchase from "./ProductPurchase";
-import { selectProductById } from "../../../Features/Product/Products";
+import {
+  useGetProductQuery,
+} from "../../../Features/Product/Products";
 
-export type ProductPageProps = {
-  // Define any additional props if necessary
-};
-
-const ProductPage: React.FC<ProductPageProps> = () => {
+const ProductPage = () => {
   const { productId } = useParams();
-  const product = useAppSelector((store) =>
-    selectProductById(store, parseInt(productId || "0"))
-  );
 
-  if (!product) {
+  const {
+    data: product,
+    isLoading,
+    isSuccess,
+  } = useGetProductQuery(productId!);
+
+  if (isLoading) {
     return (
       <Container>
-        <Typography variant="h6">Producto no encontrado</Typography>
+        <Typography variant="h6">Cargando...</Typography>
       </Container>
     );
+  } else if (isSuccess) {
+    return (
+      <Container sx={{ mt: 4 }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: { xs: "column", md: "row" },
+            gap: 1,
+          }}
+        >
+          {/* Galería de imágenes del producto */}
+          <Box sx={{ flex: 1, mr: 3 }}>
+            <img src={product.image} />
+          </Box>
+
+          {/* Información del producto */}
+          <Box
+            sx={{ flex: 1, display: "flex", flexDirection: "column", gap: 1 }}
+          >
+            <ProductPurchase product={product} />
+            <ProductDetails description={product.description} />
+          </Box>
+        </Box>
+      </Container>
+    );
+  } else {
+    <Container>
+      <Typography variant="h6">Ha ocurrido un error al intentar localizar el producto</Typography>
+    </Container>;
   }
-
-  return (
-    <Container sx={{ mt: 4 }}>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: { xs: "column", md: "row" },
-          gap: 1,
-        }}
-      >
-        {/* Galería de imágenes del producto */}
-        <Box sx={{ flex: 1, mr: 3 }}>
-          <img src= {product.image}/>
-        </Box>
-
-        {/* Información del producto */}
-        <Box sx={{ flex: 1, display: "flex", flexDirection: "column", gap: 1 }}>
-          <ProductPurchase product={product}/>
-		  <ProductDetails description = {product.description}/>
-        </Box>
-      </Box>
-    </Container>
-  );
 };
 
 export default ProductPage;

@@ -17,7 +17,7 @@ export type PorductCardProps = {
 const ProductCard: React.FC<PorductCardProps> = ({ product }) => {
   return (
     <Link to={`${product.id}`}>
-      <Card sx={{ width: 250, marginLeft: ".4rem", mt: 1 }}>
+      <Card sx={{ width: 250, maxWidth:250, marginLeft: ".4rem", mt: 1 }}>
         <CardActionArea>
           <CardMedia
             component="img"
