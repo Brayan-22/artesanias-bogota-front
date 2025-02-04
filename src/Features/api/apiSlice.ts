@@ -4,7 +4,7 @@ import {  logOut, setCredentials } from '../Authentication/AuthSlice';
 
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: 'http://localhost:3000',
+  baseUrl: import.meta.env.VITE_BACKEND_URL,
   credentials: 'include',
   prepareHeaders: (headers, { getState }) => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment

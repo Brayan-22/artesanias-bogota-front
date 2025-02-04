@@ -1,6 +1,12 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
+const leftImg = new URL("images/home/physical-stores-image.jpg",import.meta.env.VITE_CLOUD_FRONT_URL).href
+const rightImg = new URL("images/home/physical-stores-image2.jpg",import.meta.env.VITE_CLOUD_FRONT_URL).href
+
+
+
+
 const PhysicalStores = () => {
   const navigate  = useNavigate()
   return (
@@ -14,7 +20,7 @@ const PhysicalStores = () => {
           justifyContent: "center",
           width: "50%",
           height: "100vh", // Ajusta la altura según lo necesario
-          backgroundImage: `url("/src/assets/images/home/physical-stores-image.jpg")`,
+          backgroundImage: `url(${leftImg})`,
           backgroundSize: "cover", // Cubre todo el contenedor
           backgroundPosition: "center", // Centra la imagen
           backgroundRepeat: "no-repeat", // Evita repeticiones
@@ -38,7 +44,7 @@ const PhysicalStores = () => {
           backgroundColor: "#00000",
           width: "50%",
           height: "100vh",
-          backgroundImage: `url("/src/assets/images/home/physical-stores-image2.jpg")`,
+          backgroundImage: `url(${rightImg})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
