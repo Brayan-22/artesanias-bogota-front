@@ -1,9 +1,11 @@
-import { createEntityAdapter, createSelector, EntityState } from "@reduxjs/toolkit";
+import {
+  createEntityAdapter,
+  createSelector,
+  EntityState,
+} from "@reduxjs/toolkit";
 import { STATE_STATUS } from "../responseStatus";
 import { apiSlice } from "../api/apiSlice";
 import { RootState } from "../../app/store";
-
-
 
 export interface Product {
   id: string;
@@ -32,29 +34,53 @@ export interface NewProduct {
   updated_at: string;
 }
 
-interface ProductsState extends EntityState<Product, string> {
+export interface ProductResponse {
+  id: string;
+  nombre: string;
+  precio: number;
+  descripcion: string;
+  urlImagen: string;
+}
+
+interface ProductsState extends EntityState<ProductResponse, string> {
   status: STATE_STATUS;
   error: string | null;
 }
 
-const productAdapter = createEntityAdapter<Product>({});
+const productAdapter = createEntityAdapter<ProductResponse>({});
 
- // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-expect-error
 const initialState: ProductsState = productAdapter.getInitialState({
   status: STATE_STATUS.IDLE,
   error: null,
 });
 
+const BASE_URL = "commerce/catalogo";
+
 export const apiSliceWithProducts = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getProducts: builder.query<Product[], void>({
-      query: () => "/products",
+    getProducts: builder.query<ProductResponse[], void>({
+      query: () => `${BASE_URL}?page=0&size=10`,
+
       providesTags: ["Products", "Categories"],
     }),
     getProduct: builder.query<Product, string>({
-      query: (productId) => `/products/${productId}`,
+      query: (productId) => `${BASE_URL}/producto?nombre=${productId}`,
     }),
+    getSortedProductsByPrice: builder.query<ProductResponse[], void>({
+      query: (sortStyle) =>
+        `${BASE_URL}?page=0&size=10&sortbyprice=${sortStyle}`,
+    }),
+    getProductByCategoryId: builder.query<ProductResponse[], {categoryId:number}>({
+      query: ({categoryId}) =>
+        `${BASE_URL}/producto/${categoryId}?page=0&size=10 `,
+    }),
+    getSortedByPriceProductsByCategoryId: builder.query<ProductResponse[], {categoryId: string, sortStyle: string}>({
+      query: ({categoryId, sortStyle}) =>
+        `${BASE_URL}/producto/${categoryId}?page=0&size=10&sortbyPrice=${sortStyle} `,
+    }),
+
     addNewProduct: builder.mutation<Product, NewProduct>({
       query: (initialProduct) => ({
         url: "/products",
@@ -84,23 +110,24 @@ export const apiSliceWithProducts = apiSlice.injectEndpoints({
 export const {
   useGetProductsQuery,
   useGetProductQuery,
+  useGetProductByCategoryIdQuery,
   useAddNewProductMutation,
   useUpdateProductMutation,
   useDeleteProductMutation,
 } = apiSliceWithProducts;
 
-const emptyProducts: Product[] = []
+const emptyProducts: ProductResponse[] = [];
 
-export const selectProductsResult = apiSliceWithProducts.endpoints.getProducts.select();
+export const selectProductsResult =
+  apiSliceWithProducts.endpoints.getProducts.select();
 
 export const selectAllProducts = createSelector(
   selectProductsResult,
-  productsResult => productsResult?.data ?? emptyProducts
-)
+  (productsResult) => productsResult?.data ?? emptyProducts
+);
 
 export const selectProductById = createSelector(
   selectAllProducts,
   (_state: RootState, productId: string) => productId,
-  (products, productId) => products.find(product => product.id === productId)
-)
-
+  (products, productId) => products.find((product) => product.id === productId)
+);

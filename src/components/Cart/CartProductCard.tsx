@@ -17,7 +17,7 @@ export type CartProductCardProps = {
 const CartProductCard:React.FC<CartProductCardProps> = ({cartItem}) => {
   const dispatch = useAppDispatch()
 
-  const handleDeleteCartItem = (cartItemId: number) => {
+  const handleDeleteCartItem = (cartItemId: string) => {
     dispatch(itemDeletedFromCart(cartItemId))
   }
   
@@ -28,16 +28,16 @@ const CartProductCard:React.FC<CartProductCardProps> = ({cartItem}) => {
         <CardMedia
           component="img"
           height="140"
-          image={cartItem.product.image}
+          image={cartItem.product.urlImagen}
           alt="green iguana"
         />
         <CardContent sx={{display:'flex', flexDirection:'column', alignItems:'center'}}>
           <Typography gutterBottom variant="body1" component="div">
-            {cartItem.product.name} x {cartItem.quantity}
+            {cartItem.product.nombre} x {cartItem.quantity}
           </Typography>
 
           <Typography gutterBottom variant="body1" component="div">
-            ${cartItem.product.price * cartItem.quantity}.00 
+            ${cartItem.product.precio * cartItem.quantity}.00 
           </Typography>
         </CardContent>
       </CardActionArea>

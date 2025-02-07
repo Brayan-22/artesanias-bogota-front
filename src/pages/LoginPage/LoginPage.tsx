@@ -6,24 +6,23 @@ import {
   Card,
   CardActions,
   CardContent,
-  Container,
   TextField,
   Typography,
 } from "@mui/material";
 import { useLoginMutation } from "../../Features/Authentication/AuthApiSlice";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "../../Features/Authentication/AuthSlice";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
   const userRef = useRef<HTMLInputElement | null>(null);
   const errRef = useRef<HTMLParagraphElement | null>(null);
   const [user, setUser] = useState("");
   const [pwd, setPwd] = useState<string>("");
-   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-expect-error
   const [errMsg, setErrMsg] = useState<string>("");
-   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-expect-error
   const [login, { isLoading }] = useLoginMutation();
   const dispatch = useDispatch();
@@ -66,15 +65,23 @@ const LoginPage = () => {
     }
   };
 
-  const handleUserInput = (e: React.ChangeEvent<HTMLInputElement>) => setUser(e.target.value);
-  const handlePwdInput = (e: React.ChangeEvent<HTMLInputElement>) => setPwd(e.target.value);
+  const handleUserInput = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setUser(e.target.value);
+  const handlePwdInput = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setPwd(e.target.value);
 
   return (
-    <Container sx={{ display: "flex", justifyContent: "center" }}>
-      <Card sx={{ maxWidth: 500 }}>
+    <Box sx={{ display: "flex", justifyContent: "center",  }}>
+      <Card sx={{ maxWidth: 500,  }}>
         <CardContent>
           <form>
-            <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
               <Typography variant="h6" sx={{ mb: 2 }}>
                 Iniciar Sesión
               </Typography>
@@ -96,7 +103,13 @@ const LoginPage = () => {
             </Box>
           </form>
         </CardContent>
-        <CardActions sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+        <CardActions
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
           <Button
             size="medium"
             variant="contained"
@@ -109,18 +122,20 @@ const LoginPage = () => {
           >
             Ingresar
           </Button>
-          <Typography
-            sx={{
-              color: "#ff6c1f",
-              textDecorationLine: "underline",
-              cursor: "pointer",
-            }}
-          >
-            ¿Aún no tienes una cuenta?
-          </Typography>
+          <Link to="/register">
+            <Typography
+              sx={{
+                color: "#ff6c1f",
+                textDecorationLine: "underline",
+                cursor: "pointer",
+              }}
+            >
+              ¿Aún no tienes una cuenta?
+            </Typography>
+          </Link>
         </CardActions>
       </Card>
-    </Container>
+    </Box>
   );
 };
 

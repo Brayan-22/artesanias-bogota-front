@@ -9,34 +9,52 @@ import {
   NativeSelect,
 } from "@mui/material";
 import { useParams, useNavigate, Link, useLocation } from "react-router-dom";
-import { useAddNewProductMutation, useGetProductQuery, useUpdateProductMutation } from "./Products";
+import {
+  useAddNewProductMutation,
+  useUpdateProductMutation,
+} from "./Products";
 import { useGetCategoriesQuery } from "../Categories/Category";
+import {
+} from "../Inventory/InventorySlice";
+import { useAppSelector } from "../../app/hooks";
+import { selectProductsByFromWarehouseById, useGetwarehousesQuery } from "../Warehouse/Warehouses";
 
 const ProductForm = () => {
   const { warehouseId, productId } = useParams();
-
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
   const navigate = useNavigate();
   const path = useLocation().pathname;
 
-  const { data: product } = useGetProductQuery(productId!);
-  const [addNewProduct] = useAddNewProductMutation()
-  const [updateProduct] = useUpdateProductMutation()
+  const {/*  data: fetchProducts, isLoading, isSuccess  */} = useGetwarehousesQuery();
+  
+  const selectedProduct = warehouseId && productId ? useAppSelector((state) => selectProductsByFromWarehouseById(state, {warehouseId, productId})) : null
+ 
+  const product = selectedProduct ?  selectedProduct[0] : null;
+  
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
+  const [addNewProduct] = useAddNewProductMutation();
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
+  const [updateProduct] = useUpdateProductMutation();
 
   const { data: categories = [] } = useGetCategoriesQuery();
 
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
   const [preview, setPreview] = useState<string>(product?.image || "");
 
   const [formState, setFormState] = useState({
-    name: product?.name || "",
-    stock: product?.stock || 0,
-    price: product?.price || 0,
-    category_id: product?.category_id || 0,
-    description: product?.description || "",
-    image: product?.image || "",
-    created_at: product?.created_at || "",
-    updated_at: product?.updated_at || "",
-    warehouse_id: warehouseId || "",
-    status: product?.status || "out_of_stock",
+    name: product?.producto || "",
+    stock: product?.cantidad || 0,
+   /*  price: product?.precio || 0,
+    category_id: product?.categoria || 0,
+    description: product?.descripcion || "",
+    image: product?.urlImagen || "", */
+    warehouse_id: product?.idAlmacen || "",
+    store_id: product?.sucursal || "",
   });
 
   const handleInputChange = (
@@ -82,18 +100,18 @@ const ProductForm = () => {
     }
   };
 
-   const handleCreateProduct = async() => {
-    await addNewProduct({...formState})
+ /*  const handleCreateProduct = async () => {
+    await addNewProduct({ ...formState });
   };
 
   const handleEditProduct = async () => {
-    productId && await updateProduct({...formState, id:  productId})
-  };
- 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    productId && (await updateProduct({ ...formState, id: productId }));
+  }; */
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    !product ? handleCreateProduct() : handleEditProduct();
-    navigate(`../products`);
+    /* !product ? handleCreateProduct() : handleEditProduct();
+    navigate(`../products`); */
   };
 
   if (!product && !path.includes("createProduct")) {
@@ -108,7 +126,7 @@ const ProductForm = () => {
       <Typography variant="h5" gutterBottom>
         {!product ? "Crear Producto" : "Editar Producto"}
       </Typography>
-      <Box component="form"  onSubmit={handleSubmit}  noValidate>
+      <Box component="form" onSubmit={handleSubmit} noValidate>
         <Stack spacing={2}>
           <Box
             sx={{
@@ -161,6 +179,8 @@ const ProductForm = () => {
               label="Precio"
               name="price"
               type="number"
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
               value={formState.price}
               onChange={handleInputChange}
               required
@@ -169,11 +189,15 @@ const ProductForm = () => {
           <NativeSelect
             sx={{ mb: 5 }}
             name="category_id"
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
             value={formState.category_id ? formState.category_id : ""}
             onChange={handleInputChange}
           >
             {categories.map((category) => (
               <option key={category.id} value={category.id}>
+                {/* // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error */}
                 {category.name}
               </option>
             ))}
@@ -182,6 +206,8 @@ const ProductForm = () => {
             fullWidth
             label="Descripción"
             name="description"
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
             value={formState.description}
             onChange={handleInputChange}
             multiline

@@ -1,40 +1,66 @@
-import { Box, Button, Stack, TextField, Typography } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Stack, TextField, Typography } from "@mui/material";
 import React, { useState } from "react";
-import { Product } from "../../../Features/Product/Products";
-import { useAppDispatch } from "../../../app/hooks";
-import { CartItem, itemAddedToCart } from "../../../Features/Cart/Cart";
+import { ProductResponse } from "../../../Features/Product/Products";
+import { useAppDispatch, useAppSelector } from "../../../app/hooks";
+import {
+  CartItem,
+  itemAddedToCart,
+  selectCart,
+} from "../../../Features/Cart/Cart";
+import { InventoryResponse } from "../../../Features/Inventory/InventorySlice";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+
 
 export type ProductPurchaseProps = {
-  product: Product;
+  inventoryProduct: InventoryResponse;
+  product: ProductResponse;
 };
 
-const ProductPurchase: React.FC<ProductPurchaseProps> = ({ product }) => {
+const ProductPurchase: React.FC<ProductPurchaseProps> = ({
+  inventoryProduct,
+  product,
+}) => {
   const dispatch = useAppDispatch();
 
   const initialCartItem: CartItem = {
-    id: Number(product.id),
+    id: product.id,
     product: product,
     quantity: 1,
   };
+
+  const currentCart = useAppSelector(selectCart);
+
   const [cartItem, setCartItem] = useState(initialCartItem);
 
   const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const quantity = parseInt(e.target.value, 10);
 
-    if (quantity > product.stock) {
+    if (quantity > inventoryProduct.cantidad) {
       alert("Lo sentimos, no hay suficiente stock");
       return;
     }
 
     setCartItem({
       ...cartItem,
-      quantity: quantity > 0 ? quantity : 1, // Evitar cantidad negativa o cero
+      quantity: quantity > 0 ? quantity : 1,
     });
   };
 
-  const handleAddProductToCart = (cartItem: CartItem) => {
-    if (cartItem.quantity > cartItem.product.stock) {
-      alert("El producto se ha agotado");
+  const handleAddProductToCart = () => {
+    console.log("productos del carrito", currentCart.cartItems);
+
+    console.log(cartItem.quantity);
+
+    const currentProduct = currentCart.cartItems.find(
+      (c) => c.id === cartItem.id
+    );
+    if (
+      currentProduct?.quantity &&
+      currentProduct.quantity > inventoryProduct.cantidad
+    ) {
+      alert(
+        "La unidades que intenta llevar sobrepasan las existencias del producto"
+      );
     } else {
       dispatch(itemAddedToCart(cartItem));
     }
@@ -42,10 +68,10 @@ const ProductPurchase: React.FC<ProductPurchaseProps> = ({ product }) => {
 
   return (
     <Box sx={{ flex: 1, display: "flex", flexDirection: "column", gap: 2 }}>
-      <Typography variant="h4">{product.name}</Typography>
-      <Typography variant="body2">Categoría: {product.category_id ? "category" : "N/A"}</Typography>
+      <Typography variant="h4">{product.nombre}</Typography>
+      {/* <Typography variant="body2">Categoría: {product.category_id ? "category" : "N/A"}</Typography> */}
       <Typography variant="h6" sx={{ color: "green" }}>
-        ${product.price.toFixed(2)} USD
+        ${product.precio.toFixed(2)} USD
       </Typography>
 
       <Stack direction="row" alignItems="center" spacing={2}>
@@ -55,24 +81,34 @@ const ProductPurchase: React.FC<ProductPurchaseProps> = ({ product }) => {
           value={cartItem.quantity}
           inputProps={{ min: 1 }}
           sx={{ width: "100px" }}
-          onChange={handleQuantityChange} // Usamos onChange para capturar cambios en la cantidad
+          onChange={handleQuantityChange}
         />
         <Button
           sx={{
             backgroundColor: "customColor.success",
             color: "customColor.contrastText",
           }}
-          onClick={() => handleAddProductToCart(cartItem)}
+          onClick={handleAddProductToCart}
         >
           Añadir al carrito
         </Button>
       </Stack>
 
-      <Typography>Quedan {cartItem.product.stock} disponibles.</Typography>
+      {/*  <Typography>Quedan: {inventoryProduct.cantidad} disponibles.</Typography>
+       */}
 
-      <Button variant="outlined" color="primary">
-        Disponibilidad en tienda
-      </Button>
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1-content"
+          id="panel1-header"
+        >
+          <Typography component="span">Disponibilidad en tienda</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+           Disponible en: {inventoryProduct.sucursal} {/* / almacen: {inventoryProduct.idAlmacen} */}
+        </AccordionDetails>
+      </Accordion>
     </Box>
   );
 };

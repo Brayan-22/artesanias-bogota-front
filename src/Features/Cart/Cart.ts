@@ -1,10 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Product } from "../Product/Products";
+import {  ProductResponse } from "../Product/Products";
 import { RootState } from "../../app/store";
 
+
 export interface CartItem {
-  id: number;
-  product: Product;
+  id: string;
+  product: ProductResponse;
   quantity: number;
 }
 
@@ -41,11 +42,11 @@ const cartSlice = createSlice({
         };
         state.cartItems.push(newCartItem);
       }
-      state.totalAmount += cartItem.product.price * cartItem.quantity;
+      state.totalAmount += cartItem.product.precio * cartItem.quantity;
       state.totalItems += cartItem.quantity;
     },
 
-    itemDeletedFromCart: (state, action: PayloadAction<number>) => {
+    itemDeletedFromCart: (state, action: PayloadAction<string>) => {
       const cartItemId = action.payload;
 
       const itemToRemove = state.cartItems.find(
@@ -54,7 +55,7 @@ const cartSlice = createSlice({
 
       if (itemToRemove) {
         state.totalItems -= itemToRemove.quantity;
-        state.totalAmount -= itemToRemove.product.price * itemToRemove.quantity;
+        state.totalAmount -= itemToRemove.product.precio * itemToRemove.quantity;
 
         state.cartItems = state.cartItems.filter(
           (cartItem) => cartItem.id !== cartItemId
@@ -74,3 +75,7 @@ export const selectAllCartItems = (state: RootState) => state.cart.cartItems;
 
 export const selectCartItemsQuantity = (state: RootState) =>
   state.cart.totalItems;
+
+export const selectCartItemById = (state: RootState, cartItemId:string) => state.cart.cartItems.find(cartItem => {
+  cartItem.id === cartItemId
+})

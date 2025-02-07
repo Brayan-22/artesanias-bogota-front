@@ -1,9 +1,9 @@
 import { Box } from "@mui/material";
-import { Product } from "../../Features/Product/Products";
+import {  ProductResponse } from "../../Features/Product/Products";
 import ProductCard from "../../components/ProductCard";
 
 export type ProductListProps = {
-  products: Product[];
+  products: ProductResponse[];
 };
 
 const ProductList = ({ products }: ProductListProps) => {

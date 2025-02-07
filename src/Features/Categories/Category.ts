@@ -35,10 +35,20 @@ const categoryAdapter = createEntityAdapter<Category>({});
   error: null,
 }); */
 
+ export interface CategoryResponse  {
+  id: number;
+  nombre: string,
+  descripcion: string
+  
+ }
+
+
+const BASE_URL = "commerce/catalogo";
+
 export const apiSliceWithCategories = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getCategories: builder.query<Category[], void>({
-      query: () => "/categories",
+    getCategories: builder.query<CategoryResponse[], void>({
+      query: () => `${BASE_URL}/categoria`,
       providesTags: ['Categories'],
     }),
     getCategory: builder.query<Category, number>({

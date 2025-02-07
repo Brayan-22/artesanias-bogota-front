@@ -1,4 +1,4 @@
-import React, {  useState } from "react";
+import { useState } from "react";
 import {
   Box,
   Paper,
@@ -12,87 +12,58 @@ import {
   Toolbar,
   Typography,
   Checkbox,
-  IconButton,
-  Tooltip,
+  Button,
+  TextField,
 } from "@mui/material";
 import { alpha } from "@mui/material/styles";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import { Link, useParams } from "react-router-dom";
-import {
-  useGetProductsQuery,
-} from "../Product/Products";
+import {  useParams } from "react-router-dom";
+import { selectProductsByWarehouseId, useGetwarehousesQuery } from "./Warehouses";
+import { useAppSelector } from "../../app/hooks";
+
+
 
 const WarehouseTable = () => {
-   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-expect-error
   const { warehouseId } = useParams();
-  const {data: products = [] } = useGetProductsQuery()
+  const { data: fetchProducts } = useGetwarehousesQuery();
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
+  const products = useAppSelector((state) => selectProductsByWarehouseId(state, warehouseId));
 
+  console.log("todos los productos", fetchProducts);
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
   const [selected, setSelected] = useState<string[]>([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [editableStock, setEditableStock] = useState<{ [key: string]: boolean }>({});
 
   const rows = products.map((product) => ({
-    id: product.id,
-    name: product.name,
-    stock: product.stock,
-    price: product.price,
+    id: product.idProducto,
+    name: product.producto,
+    stock: product.cantidad,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
+    price: product.precio,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
     category: product.category_id,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
     description: product.description,
   }));
 
-  const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.checked) {
-      const newSelected = rows.map((row) => row.id);
-      setSelected(newSelected);
-      return;
-    }
-    setSelected([]);
+  const toggleEditStock = (id: string) => {
+    setEditableStock((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
   };
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-expect-error
-  const handleClick = (event: React.MouseEvent<unknown>, id: string) => {
-    const selectedIndex = selected.indexOf(id);
-    let newSelected: string[] = [];
-
-    if (selectedIndex === -1) {
-      newSelected = [...selected, id];
-    } else {
-      newSelected = selected.filter((item) => item !== id);
-    }
-
-    setSelected(newSelected);
-  };
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-expect-error
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
+  const handleSaveStock = (id: string, newStock: number) => {
+    console.log(`Guardar cambios del producto ${id} con nuevo stock: ${newStock}`);
   };
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-  /* const deleteProducts = () => {
-    if (selected.length === 0) return;
-    if (
-      window.confirm(`¿Estás seguro de eliminar los productos seleccionados?`)
-    ) {
-      selected.forEach((id) => dispatch(deleteProductById(id)));
-      setSelected([]);
-    }
-  }; */
-
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
-
-    if(products.length === 0){
-      <h1>No hay productos para enseñar :c</h1>
-    }
   return (
     <Box sx={{ width: "80%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
@@ -100,110 +71,60 @@ const WarehouseTable = () => {
           sx={{
             pl: { sm: 2 },
             pr: { xs: 1, sm: 1 },
-            bgcolor:
-              selected.length > 0
-                ? (theme) =>
-                    alpha(
-                      theme.palette.primary.main,
-                      theme.palette.action.activatedOpacity
-                    )
-                : undefined,
+            bgcolor: selected.length > 0 ? (theme) => alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity) : undefined,
           }}
         >
-          {selected.length > 0 ? (
-            <Typography
-              sx={{ flex: "1 1 100%" }}
-              color="inherit"
-              variant="subtitle1"
-              component="div"
-            >
-              {selected.length} seleccionado(s)
-            </Typography>
-          ) : (
-            <Typography
-              sx={{ flex: "1 1 100%" }}
-              variant="h6"
-              id="tableTitle"
-              component="div"
-            >
-              Inventario
-            </Typography>
-          )}
-          {selected.length > 0 ? (
-            <Tooltip title="Eliminar">
-              <IconButton /* onClick={deleteProducts} */>
-                <DeleteIcon />
-              </IconButton>
-            </Tooltip>
-          ) : null}
+          <Typography sx={{ flex: "1 1 100%" }} variant="h6" id="tableTitle">
+            Inventario del Almacén {warehouseId}
+          </Typography>
         </Toolbar>
         <TableContainer>
           <Table sx={{ minWidth: 750 }} size="medium">
             <TableHead>
               <TableRow>
                 <TableCell padding="checkbox">
-                  <Checkbox
-                    color="primary"
-                    indeterminate={
-                      selected.length > 0 && selected.length < rows.length
-                    }
-                    checked={rows.length > 0 && selected.length === rows.length}
-                    onChange={handleSelectAllClick}
-                  />
+                  <Checkbox color="primary" />
                 </TableCell>
-                {[
-                  "ID",
-                  "Nombre",
-                  "Stock",
-                  "Precio",
-                  "Categoría",
-                  "Descripción",
-                ].map((head) => (
+                {["ID", "Nombre", "Stock", "Precio", "Categoría", "Descripción", "Acciones"].map((head) => (
                   <TableCell key={head} align="left">
                     {head}
                   </TableCell>
                 ))}
-                <TableCell align="left">Acciones</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => {
-                  const isSelected = selected.includes(row.id);
-                  return (
-                    <TableRow
-                      hover
-                      onClick={(event) => handleClick(event, row.id)}
-                      role="checkbox"
-                      aria-checked={isSelected}
-                      key={row.id}
-                      selected={isSelected}
+              {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+                <TableRow key={row.id}>
+                  <TableCell padding="checkbox">
+                    <Checkbox color="primary" />
+                  </TableCell>
+                  <TableCell>{row.id}</TableCell>
+                  <TableCell>{row.name}</TableCell>
+                  <TableCell>
+                    <TextField
+                      type="number"
+                      defaultValue={row.stock}
+                      disabled={!editableStock[row.id]}
+                     /*  onChange={(e) => handleSaveStock(row.id, parseInt(e.target.value, 10))} */
+                      inputProps={{ min: 0, pattern: "[0-9]*" }}
+                    />
+                  </TableCell>
+                  <TableCell>{row.price}</TableCell>
+                  <TableCell>{row.category}</TableCell>
+                  <TableCell>{row.description}</TableCell>
+                  <TableCell>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      sx={{ textTransform: "none" }}
+                      onClick={() => toggleEditStock(row.id)}
                     >
-                      <TableCell padding="checkbox">
-                        <Checkbox color="primary" checked={isSelected} />
-                      </TableCell>
-                      <TableCell>{row.id}</TableCell>
-                      <TableCell>{row.name}</TableCell>
-                      <TableCell>{row.stock}</TableCell>
-                      <TableCell>{row.price}</TableCell>
-                      <TableCell>{"categoría"}</TableCell>
-                      <TableCell>{row.description}</TableCell>
-                      <TableCell>
-                        <Link to={`editProduct/${row.id}`}>
-                          <IconButton>
-                            <EditIcon />
-                          </IconButton>
-                        </Link>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: 53 * emptyRows }}>
-                  <TableCell colSpan={6} />
+                      {editableStock[row.id] ? "Guardar cambios" : "Gestionar stock"}
+                    </Button>
+                  
+                  </TableCell>
                 </TableRow>
-              )}
+              ))}
             </TableBody>
           </Table>
         </TableContainer>
@@ -213,8 +134,8 @@ const WarehouseTable = () => {
           count={rows.length}
           rowsPerPage={rowsPerPage}
           page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
+          onPageChange={(_, newPage) => setPage(newPage)}
+          onRowsPerPageChange={(e) => setRowsPerPage(parseInt(e.target.value, 10))}
         />
       </Paper>
     </Box>

@@ -12,6 +12,7 @@ const baseQuery = fetchBaseQuery({
     const token = getState().auth.token
     if (token) {
         headers.set("authorization", `Bearer ${token}`)
+        headers.set("Content-Type", "application/json");
     }
     return headers
 }
@@ -45,7 +46,7 @@ const baseQueryWithReauth = async (
 export const apiSlice = createApi({
   reducerPath: 'api',
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['Products', 'Categories', 'Shops'],
+  tagTypes: ['Products', 'Categories', 'Shops', 'Customers'],
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-expect-error
   endpoints: (builder) => ({})

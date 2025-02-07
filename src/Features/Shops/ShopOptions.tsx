@@ -1,4 +1,4 @@
-import AddIcon from '@mui/icons-material/Add';
+import AddIcon from "@mui/icons-material/Add";
 import InventoryIcon from "@mui/icons-material/Inventory";
 import {
   Box,
@@ -8,16 +8,19 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
+import SellIcon from "@mui/icons-material/Sell";
+import BarChartIcon from "@mui/icons-material/BarChart";
 const shopOptions = () => {
-  const {shopId} = useParams();
+  /* const {shopId} = useParams(); */
+  const shopId = 1;
   return (
     <Box
-      sx={{ width: "100%", maxWidth: 150, bgcolor: "background.paper", mr: 2 }}
+      sx={{ width: "100%", maxWidth: 200, bgcolor: "background.paper", ml: 2 }}
     >
       <nav aria-label="main mailbox folders">
         <List>
-          <Link to={`../shops/${shopId}`}>
+          <Link to={`/manager/${shopId}`}>
             <ListItem disablePadding>
               <ListItemButton>
                 <ListItemIcon>
@@ -27,17 +30,57 @@ const shopOptions = () => {
               </ListItemButton>
             </ListItem>
           </Link>
-          <Link to={`../shops/${shopId}/createWarehouse`}>
+          <Link to={`/manager/${shopId}/createWarehouse`}>
             <ListItem disablePadding>
               <ListItemButton>
                 <ListItemIcon>
-                  <AddIcon/>
+                  <AddIcon />
                 </ListItemIcon>
                 <ListItemText primary="Agregar Almacen" />
               </ListItemButton>
             </ListItem>
           </Link>
-          
+          <Link to={`/manager/${shopId}/products`}>
+            <ListItem disablePadding>
+              <ListItemButton>
+                <ListItemIcon>
+                  <InventoryIcon />
+                </ListItemIcon>
+                <ListItemText primary="Productos" />
+              </ListItemButton>
+            </ListItem>
+          </Link>
+          <Link to={`/manager/${shopId}/products/createProduct`}>
+            <ListItem disablePadding>
+              <ListItemButton>
+                <ListItemIcon>
+                  <AddIcon />
+                </ListItemIcon>
+                <ListItemText primary="Agregar Productos" />
+              </ListItemButton>
+            </ListItem>
+          </Link>
+
+          <Link to={`/manager/${shopId}/createWarehouse`}>
+            <ListItem disablePadding>
+              <ListItemButton>
+                <ListItemIcon>
+                  <SellIcon />
+                </ListItemIcon>
+                <ListItemText primary="Ventas" />
+              </ListItemButton>
+            </ListItem>
+          </Link>
+          <Link to={`/manager/${shopId}/createWarehouse`}>
+            <ListItem disablePadding>
+              <ListItemButton>
+                <ListItemIcon>
+                  <BarChartIcon />
+                </ListItemIcon>
+                <ListItemText primary="Estadísticas" />
+              </ListItemButton>
+            </ListItem>
+          </Link>
         </List>
       </nav>
     </Box>

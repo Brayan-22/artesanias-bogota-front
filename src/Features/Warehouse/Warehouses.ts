@@ -11,6 +11,14 @@ export interface Warehouse {
   is_central: boolean
 }
 
+export interface WarehouseResponse {
+  idProducto: string;
+  idAlmacen: string;
+  sucursal: string;
+  producto: string;
+  cantidad: number;
+}
+
 export interface NewWarehouse {
   location_id: number
   store_id: string
@@ -32,11 +40,13 @@ const initialState: WarehousesState = warehouseAdapter.getInitialState({
   error: null,
 })
 
+const BASE_URL_CENTRAL = "inventory/central";
+
 
 export const apiSliceWithwarehouses = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getwarehouses: builder.query<Warehouse[], void>({
-      query: () => "/warehouses",
+    getwarehouses: builder.query<WarehouseResponse[], void>({
+      query: () => `${BASE_URL_CENTRAL}?page=0&size=10`,
     }),
     getwarehouse: builder.query<Warehouse, string>({
       query: (warehouseId) => `/warehouses/${warehouseId}`,
@@ -72,7 +82,7 @@ export const {
   useDeletewarehouseMutation,
 } = apiSliceWithwarehouses;
 
-const emptywarehouses: Warehouse[] = []
+const emptywarehouses: WarehouseResponse[] = []
 
 export const selectwarehousesResult = apiSliceWithwarehouses.endpoints.getwarehouses.select();
 
@@ -81,9 +91,24 @@ export const selectAllwarehouses = createSelector(
   warehousesResult => warehousesResult?.data ?? emptywarehouses
 )
 
-export const selectwarehouseById = createSelector(
+/* export const selectwarehouseById = createSelector(
   selectAllwarehouses,
   (_state: RootState, warehouseId: string) => warehouseId,
   (warehouses, warehouseId) => warehouses.find(warehouse => warehouse.id === warehouseId)
+) */
+
+export const selectProductsByWarehouseId = createSelector(
+  selectAllwarehouses,
+  (_state: RootState, warehouseId: string) => warehouseId,
+  (warehouses, warehouseId) => warehouses.filter(warehouse => warehouse.idAlmacen === warehouseId)
 )
 
+
+export const selectProductsByFromWarehouseById = createSelector(
+  selectAllwarehouses,
+  (_state: RootState, props: { warehouseId: string; productId: string }) => props,
+  (warehouses, { warehouseId, productId }) =>
+    warehouses.filter(
+      (warehouse) => warehouse.idAlmacen === warehouseId && warehouse.idProducto === productId
+    )
+);

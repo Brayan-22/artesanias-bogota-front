@@ -10,10 +10,10 @@ import {
   TableRow,
   IconButton,
 } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
 import React, {  useState } from "react";
 import { useGetwarehousesQuery } from "./Warehouses";
 import { Link } from "react-router-dom";
+import InfoIcon from '@mui/icons-material/Info';
 
 const WarehouseList = () => {
 
@@ -26,10 +26,17 @@ const WarehouseList = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
+  
   const rows = warehouses.map((warehouse) => ({
-    id: warehouse.id,
-    name: warehouse.name,
+    id: warehouse.idAlmacen,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
+    name: warehouse.nombre,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
     location_id: warehouse.location_id,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
     is_central: warehouse.is_central
   }));
 
@@ -91,7 +98,7 @@ const WarehouseList = () => {
                       <TableCell>
                         <Link to={`warehouse/${row.id}`}>
                         <IconButton>
-                          <EditIcon />
+                          <InfoIcon/>
                         </IconButton>
                         </Link>
                       </TableCell>

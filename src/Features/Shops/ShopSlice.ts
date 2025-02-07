@@ -15,6 +15,12 @@ export interface NewShop {
   name: string
 }
 
+export const defaultShop = {
+  id:1,
+  nombre:"todo a mil",
+  ubicación: "calle 54 blabla"
+}
+
 interface shopsState extends EntityState <shop, string>{
   status: STATE_STATUS;
   error: string | null;

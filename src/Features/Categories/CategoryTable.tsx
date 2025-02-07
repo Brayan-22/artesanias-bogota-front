@@ -35,8 +35,8 @@ const CategoryTable:React.FC<CategoryTableProps>= ({toggleCurrentCategory}) => {
 
   const rows = categories.map((category) => ({
     id: category.id,
-    name: category.name,
-    description: category.description
+    name: category.nombre,
+    description: category.descripcion
   }));
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -75,7 +75,7 @@ const CategoryTable:React.FC<CategoryTableProps>= ({toggleCurrentCategory}) => {
             <Table sx={{ minWidth: 500 }} size="medium">
               <TableHead>
                 <TableRow>
-                  {["ID", "Nombre"].map((head) => (
+                  {["ID", "Nombre", "Descripción"].map((head) => (
                     <TableCell key={head} align="left">
                       {head}
                     </TableCell>
@@ -96,6 +96,7 @@ const CategoryTable:React.FC<CategoryTableProps>= ({toggleCurrentCategory}) => {
                       >
                         <TableCell>{row.id}</TableCell>
                         <TableCell>{row.name}</TableCell>
+                        <TableCell>{row.description}</TableCell>
                         <TableCell>
                           <IconButton
                             onClick={() => {

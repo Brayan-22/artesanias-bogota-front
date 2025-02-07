@@ -14,17 +14,31 @@ import {
 } from "@mui/material";
 import { useGetCategoriesQuery } from "../../Features/Categories/Category";
 import { useGetshopsQuery } from "../../Features/Shops/ShopSlice";
+import {
+  ProductResponse,
+} from "../../Features/Product/Products";
 
-const SearchCriteria = () => {
+interface SearchCriteriaProps {
+  fetchProducts: ProductResponse[];
+  filterProductsByCategory: (filteredProducts: ProductResponse[]) => void;
+}
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
+const SearchCriteria = ({ filterProductsByCategory}: SearchCriteriaProps) => {
+
   const { data: categories = [] } = useGetCategoriesQuery();
+
   const { data: shops = [] } = useGetshopsQuery();
 
-   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-expect-error
-  const handleFilterByCategory = (event: React.ChangeEvent<HTMLInputElement>  ) => {};
-   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  const handleFilterByCategory = async ( event: React.ChangeEvent<HTMLInputElement>) => {
+    
+  };
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-expect-error
-  const handleFilterByShop = (event: React.ChangeEvent<HTMLInputElement>  ) => {};
+  const handleFilterByShop = (event: React.ChangeEvent<HTMLInputElement>) => {};
 
   const sortByPrice = () => {};
 
@@ -80,11 +94,12 @@ const SearchCriteria = () => {
                 key={category.id}
                 control={
                   <Checkbox
+                    value={category.id}
                     onChange={handleFilterByCategory}
                     defaultChecked={false}
                   />
                 }
-                label={category.name}
+                label={category.nombre}
                 value={category.id}
               />
             ))}
@@ -104,9 +119,12 @@ const SearchCriteria = () => {
             {shops.map((shop) => (
               <FormControlLabel
                 key={shop.id}
-                control={<Checkbox 
-                  onChange={handleFilterByShop}
-                  defaultChecked={false} />}
+                control={
+                  <Checkbox
+                    onChange={handleFilterByShop}
+                    defaultChecked={false}
+                  />
+                }
                 label={shop.name}
               />
             ))}
