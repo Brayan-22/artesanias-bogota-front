@@ -15,6 +15,11 @@ COPY eslint.config.js ./
 COPY tsconfig*.json ./
 COPY vite.config.ts ./
 COPY index.html ./
+# Copiar configuración de nginx
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Asegurarse de que nginx puede leer la configuración
+RUN chown -R nonroot:nonroot /etc/nginx/conf.d
 # Establece los permisos correctos
 RUN chown -R nonroot:nonroot /app && \
     chmod -R 755 /app

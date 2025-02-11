@@ -1,10 +1,7 @@
 version: '3.8'
 services:
   artesaniasfrontend:
-    user: root
     image: brayan22/artesanias-frontend:latest
-    volumes:
-      - .:/app
     networks:
       - reverse-proxy
     deploy:
@@ -15,14 +12,14 @@ services:
       labels:
         - "traefik.enable=true"
         - "traefik.docker.network=reverse-proxy"
-        - "traefik.http.routers.artesaniasfrontend.entrypoints=websecure"
+        - "traefik.http.routers.artesaniasfrontend.entrypoints=web"
         - "traefik.http.routers.artesaniasfrontend.rule=Host(`artesaniasbogota.${DOMAIN}`)"
         - "traefik.http.routers.artesaniasfrontend.service=artesaniasfrontend"
         - "traefik.http.services.artesaniasfrontend.loadbalancer.server.port=80"
-        - "traefik.http.routers.artesaniasfrontend.tls=true"
-        - "traefik.http.routers.artesaniasfrontend.tls.certresolver=cloudflare"
-        - "traefik.http.routers.artesaniasfrontend.tls.domains[0].main=${DOMAIN}"
-        - "traefik.http.routers.artesaniasfrontend.tls.domains[0].sans=*.${DOMAIN}"
+        #- "traefik.http.routers.artesaniasfrontend.tls=true"
+        #- "traefik.http.routers.artesaniasfrontend.tls.certresolver=cloudflare"
+        #- "traefik.http.routers.artesaniasfrontend.tls.domains[0].main=${DOMAIN}"
+        #- "traefik.http.routers.artesaniasfrontend.tls.domains[0].sans=*.${DOMAIN}"
 networks:
   reverse-proxy:
     external: true
