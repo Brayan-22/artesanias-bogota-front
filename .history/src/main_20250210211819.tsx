@@ -5,6 +5,7 @@ import { Provider } from "react-redux";
 import { store } from "./app/store";
 import { ThemeProvider } from "@emotion/react";
 import theme from "./Theme/Theme.ts";
+import "leaflet/dist/leaflet.css";
 
 
 createRoot(document.getElementById("root")!).render(
