@@ -8,11 +8,12 @@ export const store = configureStore({
   reducer: {
     auth: authReducer,
     cart: cartReducer,
-    [apiSlice.reducerPath] : apiSlice.reducer
+    [apiSlice.reducerPath] : apiSlice.reducer,
   },
   middleware: getDefaultMiddleware=> 
     getDefaultMiddleware()
     .prepend(listenerMiddleware.middleware)
+    //manages cache lifetimes and expiration.
     .concat(apiSlice.middleware),
     
   devTools: true

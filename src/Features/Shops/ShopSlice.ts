@@ -1,18 +1,16 @@
-import { EntityState, createEntityAdapter, createSelector } from "@reduxjs/toolkit";
-import { STATE_STATUS } from "../responseStatus";
-import { RootState } from "../../app/store";
+import { createEntityAdapter} from "@reduxjs/toolkit";
 import { apiSlice } from "../api/apiSlice";
 
 
-export interface shop {
+export interface shopResponse {
   id: string
-  location_id: number
-  name: string
+  id_ubicacion: number
+  nombre: string
 }
 
-export interface NewShop {
-  location_id: number
-  name: string
+export interface ShopRequest {
+  id_ubicacion: number
+  nombre: string
 }
 
 export const defaultShop = {
@@ -21,49 +19,21 @@ export const defaultShop = {
   ubicación: "calle 54 blabla"
 }
 
-interface shopsState extends EntityState <shop, string>{
-  status: STATE_STATUS;
-  error: string | null;
-}
 
-const shopAdapter = createEntityAdapter<shop>({});
-
+const shopAdapter = createEntityAdapter<shopResponse>({});
  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-expect-error
-const initialState: shopsState = shopAdapter.getInitialState({
-  status: STATE_STATUS.IDLE,
-  error: null,
-});
+const initialState = shopAdapter.getInitialState();
 
 export const apiSliceWithShops = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getshops: builder.query<shop[], void>({
-      query: () => "/shops",
-      providesTags: ['Shops'],
-    }),
-    getshop: builder.query<shop, string>({
-      query: (shopId) => `/shops/${shopId}`,
+    getshop: builder.query<shopResponse, string>({
+      query: (shopId) => ({url: `/shops/${shopId}`}),
     }),
   }),
 });
 
 export const {
-  useGetshopsQuery,
   useGetshopQuery,
 } = apiSliceWithShops;
-
-const emptyshops: shop[] = []
-
-export const selectShopsResult = apiSliceWithShops.endpoints.getshops.select();
-
-export const selectAllshops = createSelector(
-  selectShopsResult,
-  shopsResult => shopsResult?.data ?? emptyshops
-)
-
-export const selectshopById = createSelector(
-  selectAllshops,
-  (_state: RootState, shopId: string) => shopId,
-  (shops, shopId) => shops.find(shop => shop.id === shopId)
-)
 

@@ -5,6 +5,7 @@ import {
   AccordionSummary,
   Box,
   Checkbox,
+  CircularProgress,
   FormControl,
   FormControlLabel,
   FormGroup,
@@ -12,37 +13,56 @@ import {
   NativeSelect,
   Typography,
 } from "@mui/material";
-import { useGetCategoriesQuery } from "../../Features/Categories/Category";
-import { useGetshopsQuery } from "../../Features/Shops/ShopSlice";
 import {
-  ProductResponse,
-} from "../../Features/Product/Products";
+  selectAllCategories,
+  useGetCategoriesQuery,
+} from "../../Features/Categories/Category";
+import { useAppSelector } from "../../app/hooks";
+import { store } from "../../app/store";
+import { apiSliceWithProducts } from "../../Features/Product/Products";
 
-interface SearchCriteriaProps {
-  fetchProducts: ProductResponse[];
-  filterProductsByCategory: (filteredProducts: ProductResponse[]) => void;
-}
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-expect-error
-const SearchCriteria = ({ filterProductsByCategory}: SearchCriteriaProps) => {
+const SearchCriteria = () => {
+  const { isLoading: categoriesLoading } = useGetCategoriesQuery();
+  const categories = useAppSelector(selectAllCategories);
 
-  const { data: categories = [] } = useGetCategoriesQuery();
 
-  const { data: shops = [] } = useGetshopsQuery();
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-expect-error
-  const handleFilterByCategory = async ( event: React.ChangeEvent<HTMLInputElement>) => {
-    
+  const sortByPrice = async(event: React.ChangeEvent<HTMLSelectElement>) => {
+    const { value } = event.target;
+
+    let result;
+  
+    if (value === "0") {
+      // Restablecer productos al estado original (sin orden)
+      result = await store.dispatch(
+        apiSliceWithProducts.endpoints.getProducts.initiate(undefined)
+      );
+    } else if (value === "20") {
+      // Ordenar de menor a mayor
+      result = await store.dispatch(
+        apiSliceWithProducts.endpoints.getSortedProductsByPrice.initiate("ASC")
+      );
+    } else if (value === "30") {
+      // Ordenar de mayor a menor
+      result = await store.dispatch(
+        apiSliceWithProducts.endpoints.getSortedProductsByPrice.initiate("DESC")
+      );
+    }
+  
+    if (result?.data) {
+      store.dispatch(
+        apiSliceWithProducts.util.updateQueryData(
+          "getProducts",
+          undefined,
+          () => result.data
+        )
+      );
+    }
+
   };
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-expect-error
-  const handleFilterByShop = (event: React.ChangeEvent<HTMLInputElement>) => {};
 
-  const sortByPrice = () => {};
 
-  const sortByBestSellers = () => {};
 
   return (
     <Box
@@ -61,19 +81,19 @@ const SearchCriteria = ({ filterProductsByCategory}: SearchCriteriaProps) => {
           Ordenar por
         </InputLabel>
         <NativeSelect
-          defaultValue={30}
-          inputProps={{
-            name: "age",
-            id: "uncontrolled-native",
-          }}
+          defaultValue={0}
+          onChange={sortByPrice}
         >
-          <option value={10} onClick={sortByBestSellers}>
+          <option value={0} >
+            Por defecto
+          </option>
+          <option value={10}/*  onChange={sortByBestSellers} */>
             Más vendidos
           </option>
-          <option value={20} onClick={sortByPrice}>
+          <option value={20} >
             Menor precio
           </option>
-          <option value={30} onClick={sortByPrice}>
+          <option value={30} >
             Mayor precio
           </option>
         </NativeSelect>
@@ -87,26 +107,32 @@ const SearchCriteria = ({ filterProductsByCategory}: SearchCriteriaProps) => {
           <Typography component="span">Categorías</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <FormGroup>
-            {categories.map((category) => (
-              <FormControlLabel
-                defaultChecked={false}
-                key={category.id}
-                control={
-                  <Checkbox
-                    value={category.id}
-                    onChange={handleFilterByCategory}
-                    defaultChecked={false}
-                  />
-                }
-                label={category.nombre}
-                value={category.id}
-              />
-            ))}
-          </FormGroup>
+          {categoriesLoading ? (
+            <Box sx={{ display: "flex", justifyContent: "center" }}>
+              <CircularProgress />
+            </Box>
+          ) : (
+            <FormGroup>
+              {categories.map((category) => (
+                <FormControlLabel
+                  defaultChecked={false}
+                  key={category.id}
+                  control={
+                    <Checkbox
+                      value={category.id}
+                    
+                      defaultChecked={false}
+                    />
+                  }
+                  label={category.nombre}
+                  value={category.id}
+                />
+              ))}
+            </FormGroup>
+          )}
         </AccordionDetails>
       </Accordion>
-      <Accordion>
+     {/*  <Accordion>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1-content"
@@ -116,7 +142,7 @@ const SearchCriteria = ({ filterProductsByCategory}: SearchCriteriaProps) => {
         </AccordionSummary>
         <AccordionDetails>
           <FormGroup>
-            {shops.map((shop) => (
+             {shops.map((shop) => (
               <FormControlLabel
                 key={shop.id}
                 control={
@@ -130,7 +156,7 @@ const SearchCriteria = ({ filterProductsByCategory}: SearchCriteriaProps) => {
             ))}
           </FormGroup>
         </AccordionDetails>
-      </Accordion>
+      </Accordion> */}
     </Box>
   );
 };

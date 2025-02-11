@@ -1,5 +1,5 @@
 import React from "react";
-import Badge, { BadgeProps } from "@mui/material/Badge";
+import Badge from "@mui/material/Badge";
 import { styled } from "@mui/material/styles";
 import IconButton from "@mui/material/IconButton";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
@@ -8,11 +8,12 @@ import Drawer from "@mui/material/Drawer";
 import Button from "@mui/material/Button";
 import { useAppSelector } from "../../app/hooks";
 import { selectCart, selectCartItemsQuantity } from "../../Features/Cart/Cart";
-import { Typography } from "@mui/material";
+import { Typography, Divider } from "@mui/material";
 import CartProductCard from "./CartProductCard";
-import { Link } from "react-router";
+import { Link, useParams } from "react-router";
+import { selectCurretTestMode } from "../../Features/Authentication/AuthSlice";
 
-const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
+const StyledBadge = styled(Badge)(({ theme }) => ({
   "& .MuiBadge-badge": {
     right: -3,
     top: 13,
@@ -25,100 +26,11 @@ const Cart = () => {
   const { cartItems, totalAmount } = useAppSelector(selectCart);
   const cartCount = useAppSelector(selectCartItemsQuantity);
   const [open, setOpen] = React.useState(false);
-
+   const testMode = useAppSelector(selectCurretTestMode);
+   const {warehouseId} = useParams()
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
   };
-  const DrawerList =
-    cartItems.length > 0 ? (
-      <Box
-        sx={{
-          width: 250,
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-          flexWrap: "wrap",
-          pt: 2,
-          overflow: "scroll",
-          ml: 2,
-        }}
-        role="presentation" /* onClick={toggleDrawer(false)} */
-      >
-        <Box
-          sx={{
-            height: "70%",
-            overflowY: "scroll",
-            mb: 5,
-          }}
-        >
-          {cartItems.map((cartItem) => (
-            <CartProductCard cartItem={cartItem} key={cartItem.id} />
-          ))}
-        </Box>
-
-        {/* 
-      <Divider sx={{ mb: 2 }} /> */}
-
-        <Box
-          sx={{
-            display: "flex",
-            flexWrap: "wrap",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Typography variant="h5" sx={{ mb: 1 }}>
-            ${totalAmount}.00
-          </Typography>
-        </Box>
-        <Link to="/customer/1/order">
-          <Button
-            sx={{
-              backgroundColor: "customColor.success",
-              color: "customColor.contrastText",
-            }}
-          >
-            Terminar pedido
-          </Button>
-        </Link>
-      </Box>
-    ) : (
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh", // Asegura que esté centrado verticalmente
-          textAlign: "center",
-        }}
-      >
-        <Typography
-          variant="h6"
-          sx={{
-            fontWeight: "bold",
-            color: "#757575", // Color gris llamativo
-            textTransform: "uppercase", // Texto en mayúsculas
-            mb: 2, // Espaciado inferior
-          }}
-        >
-          No se han ingresado
-        </Typography>
-
-        <Typography
-          variant="h6"
-          sx={{
-            fontWeight: "bold",
-            color: "#757575",
-            textTransform: "uppercase",
-          }}
-        >
-          Productos al carrito
-        </Typography>
-      </Box>
-    );
 
   return (
     <>
@@ -127,13 +39,77 @@ const Cart = () => {
           <ShoppingCartIcon />
         </StyledBadge>
       </IconButton>
-      <Drawer
-        sx={{ p: 4 }}
-        anchor="right"
-        open={open}
-        onClose={toggleDrawer(false)}
-      >
-        {DrawerList}
+      <Drawer anchor="right" open={open} onClose={toggleDrawer(false)}>
+        <Box
+          sx={{
+            width: 300,
+            display: "flex",
+            flexDirection: "column",
+            height: "100vh",
+            alignItems: "center",
+          }}
+        >
+          {cartItems.length > 0 ? (
+            <>
+              <Box sx={{ flexGrow: 1, overflowY: "auto", p: 2 }}>
+                {cartItems.map((cartItem) => (
+                  <CartProductCard cartItem={cartItem} key={cartItem.id} />
+                ))}
+              </Box>
+              <Divider />
+              <Box
+                sx={{
+                  p: 2,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                <Typography variant="h6" sx={{ mb: 1 }}>
+                  Total: ${totalAmount.toFixed(2)}
+                </Typography>
+                <Link
+                  to={testMode.mode === "customer" ? "/customer/1/order" : `/admin/warehouse/${warehouseId}/order`}
+                  style={{ textDecoration: "none", width: "100%" }}
+                >
+                  <Button
+                    fullWidth
+                    sx={{
+                      backgroundColor: "customColor.success",
+                      color: "customColor.contrastText",
+                    }}
+                  >
+                    Finalizar compra
+                  </Button>
+                </Link>
+              </Box>
+            </>
+          ) : (
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "100vh",
+                textAlign: "center",
+                p: 2,
+              }}
+            >
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: "bold",
+                  color: "#757575",
+                  textTransform: "uppercase",
+                  mb: 2,
+                }}
+              >
+                No hay productos en el carrito
+              </Typography>
+            </Box>
+          )}
+        </Box>
       </Drawer>
     </>
   );

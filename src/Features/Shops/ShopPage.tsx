@@ -1,17 +1,16 @@
 import { Box } from "@mui/material";
-import { Outlet, useParams } from "react-router-dom";
+import { Outlet,} from "react-router-dom";
 import StoreOptions from "./ShopOptions";
 import { defaultShop} from "./ShopSlice";
 
 const ShopPage = ({}) => {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-expect-error
-  const { shopId } = useParams();
+ 
+  //const { shopId } = useParams();
   //const {data: shop, isSuccess, isLoading} = useGetshopQuery(shopId!)
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-expect-error
-  const shop = defaultShop;
+  const shopId = defaultShop.id;
 
   return (
     <Box sx={{ display: "flex" }}>

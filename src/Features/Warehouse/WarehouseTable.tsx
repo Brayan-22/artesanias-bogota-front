@@ -17,40 +17,29 @@ import {
 } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import {  useParams } from "react-router-dom";
-import { selectProductsByWarehouseId, useGetwarehousesQuery } from "./Warehouses";
-import { useAppSelector } from "../../app/hooks";
+import { useGetInventoryByWarewouseIdQuery, useUpdateProductFromWarehouseInventoryMutation } from "../Inventory/InventorySlice";
 
 
 
 const WarehouseTable = () => {
   const { warehouseId } = useParams();
-  const { data: fetchProducts } = useGetwarehousesQuery();
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-expect-error
-  const products = useAppSelector((state) => selectProductsByWarehouseId(state, warehouseId));
-
-  console.log("todos los productos", fetchProducts);
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  const { data: products, isLoading } = useGetInventoryByWarewouseIdQuery(warehouseId!)
+  const [updateProductFromWarehouseInventory] = useUpdateProductFromWarehouseInventoryMutation()
+ // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-expect-error
   const [selected, setSelected] = useState<string[]>([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [editableStock, setEditableStock] = useState<{ [key: string]: boolean }>({});
 
-  const rows = products.map((product) => ({
+  const rows = products ? products.map((product) => ({
     id: product.idProducto,
     name: product.producto,
     stock: product.cantidad,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-expect-error
-    price: product.precio,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-expect-error
-    category: product.category_id,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-expect-error
-    description: product.description,
-  }));
+    inventoryId: product.id
+  })) : [];
 
   const toggleEditStock = (id: string) => {
     setEditableStock((prev) => ({
@@ -58,10 +47,12 @@ const WarehouseTable = () => {
       [id]: !prev[id],
     }));
   };
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-expect-error
-  const handleSaveStock = (id: string, newStock: number) => {
-    console.log(`Guardar cambios del producto ${id} con nuevo stock: ${newStock}`);
+
+
+  const handleSaveStock = async (inventoryId: string, stock: number)=> {
+    console.log(`Guardar cambios del producto ${inventoryId} con nuevo stock: ${stock}`);
+    await updateProductFromWarehouseInventory({ inventoryId, inventory: {cantidad: stock} })
+      
   };
 
   return (
@@ -105,13 +96,12 @@ const WarehouseTable = () => {
                       type="number"
                       defaultValue={row.stock}
                       disabled={!editableStock[row.id]}
-                     /*  onChange={(e) => handleSaveStock(row.id, parseInt(e.target.value, 10))} */
+                       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
+                     onChange={(e) => handleSaveStock(row.id, row.stock)} 
                       inputProps={{ min: 0, pattern: "[0-9]*" }}
                     />
                   </TableCell>
-                  <TableCell>{row.price}</TableCell>
-                  <TableCell>{row.category}</TableCell>
-                  <TableCell>{row.description}</TableCell>
                   <TableCell>
                     <Button
                       variant="outlined"

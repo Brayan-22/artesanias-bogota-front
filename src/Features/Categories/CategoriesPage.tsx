@@ -2,18 +2,19 @@ import { Box } from "@mui/material";
 import { useState } from "react";
 import CategoryTable from "./CategoryTable";
 import CategoryForm from "./CategoryForm";
-import { Category } from "./Category";
+//import { Category } from "./Category";
 import { useNavigate } from "react-router-dom";
+import { CategoryResponse } from "./Category";
 
 export interface CurrentCategory {
-  category: Category 
+  category: CategoryResponse 
 }
 
 const defaultCategory: CurrentCategory = {
   category: {
     id: 0,
-    name: "",
-    description: ""
+    nombre: "",
+    descripcion: ""
   }
 };
 
@@ -22,7 +23,7 @@ const CategoriesPage = () => {
     useState<CurrentCategory>(defaultCategory);
   const navigate = useNavigate();
 
-  const toggleCurrentCategory = (category: Category) => {
+  const toggleCurrentCategory = (category: CategoryResponse) => {
 
     if (currentCategory.category === null) {
       setCurrentCategory({ category });

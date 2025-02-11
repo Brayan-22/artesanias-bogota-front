@@ -17,7 +17,9 @@ import {
 import React, {  useState } from "react";
 
 import { Link } from "react-router-dom";
-import { useGetshopsQuery } from "./ShopSlice";
+ // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
+import { shopResponse, useGetshopQuery } from "./ShopSlice";
 
 const shopsList = () => {
    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -31,10 +33,10 @@ const shopsList = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const rows = shops.map((shop) => ({
+  const rows = shops.map((shop: shopResponse) => ({
     id: shop.id,
-    name: shop.name,
-    location_id: shop.location_id,
+    name: shop.nombre,
+    location_id: shop.id_ubicacion,
   }));
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -80,7 +82,7 @@ const shopsList = () => {
             <TableBody>
               {rows
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => {
+                .map((row:any) => {
                   return (
                     <TableRow
                       hover

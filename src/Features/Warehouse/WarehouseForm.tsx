@@ -9,20 +9,23 @@ import {
   NativeSelect,
 } from "@mui/material";
 import { useParams, useNavigate, Link, useLocation } from "react-router-dom";
-import { useGetwarehouseQuery } from "./Warehouses";
+import { useAddWarehouseMutation, useGetWarehouseQuery, useUpdateWarehouseMutation,  } from "./Warehouses";
 
 const warehouseForm = () => {
-  const { warehouseId } = useParams();
- // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-expect-error
+  const { shopId, warehouseId } = useParams();
+ 
   const navigate = useNavigate();
   const path = useLocation().pathname;
 
-  const { data: warehouse} = useGetwarehouseQuery(warehouseId!);
+  const { data: warehouse } = useGetWarehouseQuery({ 
+    warehouseId: warehouseId ?? "", 
+    shopId: shopId ?? "" 
+  });
+  const [addWarehouse] = useAddWarehouseMutation()
+  const [updateWarehouse] = useUpdateWarehouseMutation()
 
   const [formState, setFormState] = useState({
-    name: warehouse?.name || "",
-    location: warehouse?.location_id || 0,
+    location: warehouse?.id_ubicación || 0,
     is_central: warehouse?.is_central || false,
   });
 
@@ -36,21 +39,25 @@ const warehouseForm = () => {
     setFormState({ ...formState, [name]: value });
   };
 
- /*  
+  
 
-  const handleCreatewarehouse = () => {
-    dispatch(createwarehouse({ ...formState } as warehouse));
+  const handleCreatewarehouse = async() => {
+    await addWarehouse({shopId: Number(shopId), newWarehouse: {id_ubicación: formState.location, is_central: formState.is_central}})
   };
-
-  const handleEditwarehouse = () => {
-    dispatch(editwarehouse({ ...formState, id: warehouseId } as warehouse));
+ // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
+  const handleEditwarehouse = async () => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
+    await updateWarehouse({shopId: Number(shopId), warehouseId , warehouse: {id_ubicación: formState.location, is_central: formState.is_central}})
   };
- */
-  /* const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+ // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    !warehouse ? handleCreatewarehouse() : handleEditwarehouse();
+    !warehouse ? handleCreatewarehouse() : null;
     navigate(`../warehouses`);
-  }; */
+  };
 
   if (!warehouse && !path.includes("createWarehouse")) {
     return <Typography variant="h6">{"warehouse no encontrado :("}</Typography>;
@@ -67,14 +74,7 @@ const warehouseForm = () => {
       <Box component="form" /* onSubmit={handleSubmit} */ noValidate>
         <Stack spacing={2}>
          
-          <TextField
-            fullWidth
-            label="Nombre del warehouse"
-            name="name"
-            value={formState.name}
-            onChange={handleInputChange}
-            required
-          />
+    
           <Stack direction="row" spacing={2}>
             <TextField
               fullWidth

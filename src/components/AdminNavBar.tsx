@@ -13,6 +13,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import React from "react";
 import { Link } from "react-router-dom";
+import Cart from "./Cart/Cart";
 // const defaultAvatar = new URL("images/avatar.png",import.meta.env.VITE_CLOUD_FRONT_URL).href
 const defaultAvatar = "/src/assets/images/avatar.png";
 
@@ -130,7 +131,6 @@ const AdminNavBar = () => {
               },
             }}
           >
-           {/*  */}
 
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
@@ -138,6 +138,9 @@ const AdminNavBar = () => {
                   <Avatar alt="Avatar" src={defaultAvatar} />
                 </IconButton>
               </Tooltip>
+
+              <Cart/>
+
               <Menu
                 sx={{ mt: "45px" }}
                 id="menu-appbar"
@@ -173,6 +176,9 @@ const AdminNavBar = () => {
                     </Typography>
                   </MenuItem>
                 </Link>
+                <MenuItem onClick={handleCloseUserMenu}>
+                    <Cart/>
+                  </MenuItem>
                 <MenuItem onClick={handleCloseUserMenu}>
                   <Typography sx={{ textAlign: "center" }}>Salir</Typography>
                 </MenuItem>

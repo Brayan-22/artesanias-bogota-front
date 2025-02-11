@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import {  createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {  ProductResponse } from "../Product/Products";
 import { RootState } from "../../app/store";
 
@@ -14,6 +14,7 @@ export interface Cart {
   totalAmount: number;
   totalItems: number;
 }
+
 
 const initialState: Cart = {
   cartItems: [],

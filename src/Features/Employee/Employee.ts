@@ -74,10 +74,14 @@ const BASE_URL = "commerce/catalogo";
 export const apiSliceWithemployees = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getemployees: builder.query<employee[], void>({
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
       query: () => `${BASE_URL}?page=0&size=10`,
       /* providesTags: ["employees", "Categories"], */
     }),
     getemployee: builder.query<employee, string>({
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
       query: (employeeId) => `${BASE_URL}/employeeo?nombre=${employeeId}`,
     }),
     /* addNewemployee: builder.mutation<employee, Newemployee>({

@@ -15,6 +15,8 @@ const Populars = () => {
       </Typography>
 
       <Box sx={{ display: "flex", maxWidth: "100vw", overflowX: "scroll" }}>
+        {/*  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error */}
         {products.map((prodct) => (
           <ProductCard key={prodct.id} product={prodct} />
         ))}

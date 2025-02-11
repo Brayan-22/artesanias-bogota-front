@@ -9,15 +9,10 @@ import {
   NativeSelect,
 } from "@mui/material";
 import { useParams, useNavigate, Link, useLocation } from "react-router-dom";
-import {
-  useAddNewProductMutation,
-  useUpdateProductMutation,
-} from "./Products";
 import { useGetCategoriesQuery } from "../Categories/Category";
 import {
 } from "../Inventory/InventorySlice";
 import { useAppSelector } from "../../app/hooks";
-import { selectProductsByFromWarehouseById, useGetwarehousesQuery } from "../Warehouse/Warehouses";
 
 const ProductForm = () => {
   const { warehouseId, productId } = useParams();
@@ -26,8 +21,11 @@ const ProductForm = () => {
   const navigate = useNavigate();
   const path = useLocation().pathname;
 
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
   const {/*  data: fetchProducts, isLoading, isSuccess  */} = useGetwarehousesQuery();
-  
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
   const selectedProduct = warehouseId && productId ? useAppSelector((state) => selectProductsByFromWarehouseById(state, {warehouseId, productId})) : null
  
   const product = selectedProduct ?  selectedProduct[0] : null;
@@ -42,8 +40,7 @@ const ProductForm = () => {
   const { data: categories = [] } = useGetCategoriesQuery();
 
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-expect-error
+
   const [preview, setPreview] = useState<string>(product?.image || "");
 
   const [formState, setFormState] = useState({
@@ -194,10 +191,12 @@ const ProductForm = () => {
             value={formState.category_id ? formState.category_id : ""}
             onChange={handleInputChange}
           >
+            {/* // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error */}
             {categories.map((category) => (
               <option key={category.id} value={category.id}>
                 {/* // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-expect-error */}
+  */}
                 {category.name}
               </option>
             ))}

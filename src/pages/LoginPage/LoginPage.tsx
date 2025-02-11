@@ -11,21 +11,24 @@ import {
 } from "@mui/material";
 import { useLoginMutation } from "../../Features/Authentication/AuthApiSlice";
 import { useDispatch } from "react-redux";
-import { setCredentials } from "../../Features/Authentication/AuthSlice";
 import { Link, useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
   const userRef = useRef<HTMLInputElement | null>(null);
   const errRef = useRef<HTMLParagraphElement | null>(null);
   const [user, setUser] = useState("");
-  const [pwd, setPwd] = useState<string>("");
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-expect-error
-  const [errMsg, setErrMsg] = useState<string>("");
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  const [pwd, setPwd] = useState("");
+  const [errMsg, setErrMsg] = useState("");
+  const [userError, setUserError] = useState("");
+  const [pwdError, setPwdError] = useState("");
+ // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-expect-error
   const [login, { isLoading }] = useLoginMutation();
+   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
   const dispatch = useDispatch();
+   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -38,9 +41,35 @@ const LoginPage = () => {
     setErrMsg("");
   }, [user, pwd]);
 
+  const validateForm = () => {
+    let isValid = true;
+
+    if (!user.trim()) {
+      setUserError("El usuario es obligatorio.");
+      isValid = false;
+    } else {
+      setUserError("");
+    }
+
+    if (!pwd.trim()) {
+      setPwdError("La contraseña es obligatoria.");
+      isValid = false;
+    } else if (pwd.length < 6) {
+      setPwdError("La contraseña debe tener al menos 6 caracteres.");
+      isValid = false;
+    } else {
+      setPwdError("");
+    }
+
+    return isValid;
+  };
+
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    try {
+    
+    if (!validateForm()) return;
+
+   /*  try {
       const userData = await login({ user, pwd }).unwrap();
       dispatch(setCredentials({ ...userData, user }));
       setUser("");
@@ -49,30 +78,25 @@ const LoginPage = () => {
     } catch (err) {
       if (typeof err === "object" && err !== null && "status" in err) {
         if (err.status === 400) {
-          setErrMsg("Missing Username or Password");
+          setErrMsg("Faltan el usuario o la contraseña.");
         } else if (err.status === 401) {
-          setErrMsg("Unauthorized");
+          setErrMsg("Usuario o contraseña incorrectos.");
         } else {
-          setErrMsg("Login Failed");
+          setErrMsg("Error al iniciar sesión.");
         }
       } else {
-        setErrMsg("No Server Response");
+        setErrMsg("No hay respuesta del servidor.");
       }
 
       if (errRef.current) {
         errRef.current.focus();
       }
-    }
+    } */
   };
 
-  const handleUserInput = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setUser(e.target.value);
-  const handlePwdInput = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setPwd(e.target.value);
-
   return (
-    <Box sx={{ display: "flex", justifyContent: "center",  }}>
-      <Card sx={{ maxWidth: 500,  }}>
+    <Box sx={{ display: "flex", justifyContent: "center" }}>
+      <Card sx={{ maxWidth: 500 }}>
         <CardContent>
           <form>
             <Box
@@ -85,20 +109,32 @@ const LoginPage = () => {
               <Typography variant="h6" sx={{ mb: 2 }}>
                 Iniciar Sesión
               </Typography>
+
+              {errMsg && (
+                <Typography color="error" ref={errRef} sx={{ mb: 2 }}>
+                  {errMsg}
+                </Typography>
+              )}
+
               <TextField
-                id="outlined-basic"
                 label="Usuario"
                 variant="outlined"
-                sx={{ mb: 2 }}
+                sx={{ mb: 2, width: "100%" }}
                 inputRef={userRef}
-                onChange={handleUserInput}
+                value={user}
+                onChange={(e) => setUser(e.target.value)}
+                error={Boolean(userError)}
+                helperText={userError}
               />
               <TextField
-                id="outlined-basic"
                 label="Contraseña"
                 variant="outlined"
                 type="password"
-                onChange={handlePwdInput}
+                sx={{ width: "100%" }}
+                value={pwd}
+                onChange={(e) => setPwd(e.target.value)}
+                error={Boolean(pwdError)}
+                helperText={pwdError}
               />
             </Box>
           </form>
@@ -119,8 +155,9 @@ const LoginPage = () => {
               mb: 3,
             }}
             onClick={handleSubmit}
+            disabled={isLoading}
           >
-            Ingresar
+            {isLoading ? "Cargando..." : "Ingresar"}
           </Button>
           <Link to="/register">
             <Typography

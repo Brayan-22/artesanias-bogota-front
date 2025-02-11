@@ -19,16 +19,14 @@ import { alpha } from "@mui/material/styles";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { Link } from "react-router-dom";
-import { useDeleteProductMutation } from "../Product/Products";
-import { useGetAllProductsQuery } from "./InventorySlice";
+import { InventoryResponse, useGetInventoryByWarewouseIdQuery } from "./InventorySlice";
 
 const InventoryGeneralTable = () => {
   const {
     data: products = [],
     isLoading,
     isSuccess,
-  } = useGetAllProductsQuery();
-  const [deleteProduct] = useDeleteProductMutation();
+  } = useGetInventoryByWarewouseIdQuery("1")
 
   const [selected, setSelected] = useState<string[]>([]);
 
@@ -36,7 +34,7 @@ const InventoryGeneralTable = () => {
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const rows = products.map((product) => ({
+  const rows = products.map((product: InventoryResponse) => ({
     id: product.idProducto,
     nombre: product.producto,
     cantidad: product.cantidad,
@@ -80,13 +78,7 @@ const InventoryGeneralTable = () => {
   };
 
   const deleteProducts = () => {
-    if (selected.length === 0) return;
-    if (
-      window.confirm(`¿Estás seguro de eliminar los productos seleccionados?`)
-    ) {
-      selected.forEach((_id) => deleteProduct(_id));
-      setSelected([]);
-    }
+    
   };
 
   const emptyRows =

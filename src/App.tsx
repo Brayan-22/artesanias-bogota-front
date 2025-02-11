@@ -14,7 +14,6 @@ import WarehouseList from "./Features/Warehouse/WarehousesList";
 import WarehouseForm from "./Features/Warehouse/WarehouseForm";
 import ShopPage from "./Features/Shops/ShopPage";
 import OrderPage from "./Features/Cart/OrderPage";
-import Payment from "./Features/Cart/Payment";
 import UserDetailsLayout from "./Features/Cart/UserDetailsLayout";
 import UserDetails from "./Features/Cart/UserDetails";
 import RegisterPage from "./pages/RegisterPage/RegisterPage";
@@ -27,6 +26,9 @@ import TestNavbar from "./components/TestNavbar";
 import { selectCurretTestMode } from "./Features/Authentication/AuthSlice";
 import { useAppSelector } from "./app/hooks";
 import ManagerNavBar from "./components/ManagerNavBar";
+import OrderSumary from "./Features/Cart/OrderSumary";
+
+import CheckoutFlow from "./Features/Payment/CheckOutFlow";
 
 function App() {
   const testMode = useAppSelector(selectCurretTestMode);
@@ -54,6 +56,7 @@ function App() {
       )}
 
       <Routes>
+        
         {/* Página principal */}
         <Route path="/" element={<HomePage />} />
         {/* Catálogo */}
@@ -88,11 +91,12 @@ function App() {
         </Route>
 
         {/*Shop  (Emplyee/admin)*/}
-        <Route path="/admin/warehouse/:warehouseId/inventory" element={<WarehousePage />}>
+        {/* http://localhost:5173/admin/warehouse/f1b1b3b1-1b1b-1b1b-1b1b-1b1b1b1b1b1b*/}
+        <Route path="/admin/warehouse/:warehouseId" element={<WarehousePage />}>
           <Route index element={<WarehouseTable />} />
-          <Route path="inventory" element={<h1>Opciones</h1>} />
-         {/*  <Route path="products" element={<InventoryGeneralTable />} /> */}
-         
+          <Route path="products" element={<Catalog/>} />
+          <Route path="products/:productId" element={<ProductPage />} /> 
+          <Route path="order" element={<OrderSumary/>}/>
         </Route>
 
         <Route path="customer/:customerId" element={<CustomerPage />}>
@@ -102,7 +106,7 @@ function App() {
           <Route path="order" element={<OrderPage />}>
             <Route element={<UserDetailsLayout />}>
               <Route index element={<UserDetails />} />
-              <Route path="payment" element={<Payment />} />
+              <Route path="payment" element={<CheckoutFlow/>} />
             </Route>
           </Route>
         </Route>

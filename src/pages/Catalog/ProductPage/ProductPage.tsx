@@ -1,4 +1,4 @@
-import { Box, Container, Typography } from "@mui/material";
+import { Box, CircularProgress, Container, Typography } from "@mui/material";
 import { useParams } from "react-router-dom";
 import ProductDetails from "./ProductDetails";
 import ProductPurchase from "./ProductPurchase";
@@ -8,10 +8,6 @@ import {
 } from "../../../Features/Product/Products";
 import { useAppSelector } from "../../../app/hooks";
 import { defaultImg } from "../../../components/ProductCard";
-import {
-  selectInventoyByProductId,
-  useGetInventorysQuery,
-} from "../../../Features/Inventory/InventorySlice";
 
 const ProductPage = () => {
   const { productId } = useParams();
@@ -23,22 +19,15 @@ const ProductPage = () => {
     selectProductById(state, productId!)
   );
 
-  const { isLoading: isLoadingInventory, isSuccess: isSuccessInventory } =
-    useGetInventorysQuery();
 
-  const inventoryProduct = useAppSelector((state) =>
-    selectInventoyByProductId(state, productId!)
-  );
 
-  console.log("inventario del produto", inventoryProduct);
-
-  if (isLoadingProducts && isLoadingInventory) {
+  if (isLoadingProducts ) {
     return (
-      <Typography variant="h6" sx={{ mb: 2 }}>
-        Cargando...
-      </Typography>
+     <Box sx={{ display: 'flex', justifyContent:'center' }}>
+          <CircularProgress />
+        </Box>
     );
-  } else if (isSuccessProducts && isSuccessInventory) {
+  } else if (isSuccessProducts ) {
     return (
       <Container sx={{ mt: 4 }}>
         <Box
@@ -55,13 +44,13 @@ const ProductPage = () => {
 
           {/* Información del producto */}
 
-          {product && inventoryProduct ? (
+          {product 
+          ? (
             <Box
               sx={{ flex: 1, display: "flex", flexDirection: "column", gap: 1 }}
             >
               es es el producto {product.nombre}
               <ProductPurchase
-                inventoryProduct={inventoryProduct}
                 product={product}
               />
               <ProductDetails description={product.descripcion} />

@@ -71,11 +71,11 @@ const BASE_URL = "commerce/catalogo";
 export const apiSliceWithcustomers = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getcustomers: builder.query<Customer[], void>({
-      query: () => `${BASE_URL}?page=0&size=10`,
-      providesTags: ["Customers", "Categories"],
+      query: () => ({url:`${BASE_URL}?page=0&size=10`}),
+     
     }),
     getcustomer: builder.query<Customer, string>({
-      query: (customerId) => `${BASE_URL}/customero?nombre=${customerId}`,
+      query: (customerId) => ({url:`${BASE_URL}/customero?nombre=${customerId}`}),
     }),
     addNewcustomer: builder.mutation<Customer, NewCustomer>({
       query: (initialcustomer) => ({
@@ -83,7 +83,7 @@ export const apiSliceWithcustomers = apiSlice.injectEndpoints({
         method: "POST",
         body: initialcustomer,
       }),
-      invalidatesTags: ["Customers"],
+    
     }),
     updatecustomer: builder.mutation<Customer, Customer>({
       query: (editedcustomer) => ({
@@ -91,14 +91,14 @@ export const apiSliceWithcustomers = apiSlice.injectEndpoints({
         method: "PATCH",
         body: editedcustomer,
       }),
-      invalidatesTags: ["Customers"],
+
     }),
     deletecustomer: builder.mutation<Customer, string>({
       query: (customerId) => ({
         url: `/customers/${customerId}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Customers"],
+  
     }),
   }),
 });

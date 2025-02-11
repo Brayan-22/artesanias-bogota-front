@@ -1,4 +1,13 @@
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Stack, TextField, Typography } from "@mui/material";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Button,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import React, { useState } from "react";
 import { ProductResponse } from "../../../Features/Product/Products";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
@@ -7,21 +16,18 @@ import {
   itemAddedToCart,
   selectCart,
 } from "../../../Features/Cart/Cart";
-import { InventoryResponse } from "../../../Features/Inventory/InventorySlice";
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 export type ProductPurchaseProps = {
-  inventoryProduct: InventoryResponse;
   product: ProductResponse;
 };
 
-const ProductPurchase: React.FC<ProductPurchaseProps> = ({
-  inventoryProduct,
-  product,
-}) => {
+const ProductPurchase: React.FC<ProductPurchaseProps> = ({ product }) => {
   const dispatch = useAppDispatch();
 
+
+  
+ 
   const initialCartItem: CartItem = {
     id: product.id,
     product: product,
@@ -35,10 +41,10 @@ const ProductPurchase: React.FC<ProductPurchaseProps> = ({
   const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const quantity = parseInt(e.target.value, 10);
 
-    if (quantity > inventoryProduct.cantidad) {
+    /*  if (quantity > inventoryProduct.cantidad) {
       alert("Lo sentimos, no hay suficiente stock");
       return;
-    }
+    } */
 
     setCartItem({
       ...cartItem,
@@ -50,11 +56,12 @@ const ProductPurchase: React.FC<ProductPurchaseProps> = ({
     console.log("productos del carrito", currentCart.cartItems);
 
     console.log(cartItem.quantity);
-
+ // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
     const currentProduct = currentCart.cartItems.find(
       (c) => c.id === cartItem.id
     );
-    if (
+    /*  if (
       currentProduct?.quantity &&
       currentProduct.quantity > inventoryProduct.cantidad
     ) {
@@ -62,8 +69,8 @@ const ProductPurchase: React.FC<ProductPurchaseProps> = ({
         "La unidades que intenta llevar sobrepasan las existencias del producto"
       );
     } else {
-      dispatch(itemAddedToCart(cartItem));
-    }
+    } */
+    dispatch(itemAddedToCart(cartItem));
   };
 
   return (
@@ -106,9 +113,13 @@ const ProductPurchase: React.FC<ProductPurchaseProps> = ({
           <Typography component="span">Disponibilidad en tienda</Typography>
         </AccordionSummary>
         <AccordionDetails>
-           Disponible en: {inventoryProduct.sucursal} {/* / almacen: {inventoryProduct.idAlmacen} */}
+          Disponible en: {/* {inventoryProduct.sucursal} */}{" "}
+          {/* / almacen: {inventoryProduct.idAlmacen} */}
+          {/* <StoreMap stores={stores} /> */}
+         
         </AccordionDetails>
       </Accordion>
+      {/* <MapWithMarkers addresses={addresses} /> */}
     </Box>
   );
 };

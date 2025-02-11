@@ -11,13 +11,14 @@ import {
   IconButton,
 } from "@mui/material";
 import React, {  useState } from "react";
-import { useGetwarehousesQuery } from "./Warehouses";
 import { Link } from "react-router-dom";
 import InfoIcon from '@mui/icons-material/Info';
+import { useGetaWarehousesQuery } from "./Warehouses";
 
 const WarehouseList = () => {
-
-  const {data: warehouses = []} = useGetwarehousesQuery()
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
+  const {data: warehouses = []} = useGetaWarehousesQuery()
 
 
    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -26,17 +27,15 @@ const WarehouseList = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
   const rows = warehouses.map((warehouse) => ({
     id: warehouse.idAlmacen,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-expect-error
+   
     name: warehouse.nombre,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-expect-error
+
     location_id: warehouse.location_id,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-expect-error
+ 
     is_central: warehouse.is_central
   }));
 
@@ -83,6 +82,8 @@ const WarehouseList = () => {
             <TableBody>
               {rows
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
                 .map((row) => {
                   return (
                     <TableRow

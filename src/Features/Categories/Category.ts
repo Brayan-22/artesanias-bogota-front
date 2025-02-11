@@ -3,107 +3,55 @@ import {
   createSelector,
   EntityState,
 } from "@reduxjs/toolkit";
-import { STATE_STATUS } from "../responseStatus";
 import { apiSlice } from "../api/apiSlice";
-import { RootState } from "../../app/store";
-
-export interface Category {
-  id: number;
-  name: string;
-  description: string;
-}
-
-export interface NewCategory {
-  name: string;
-  description: string;
-}
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-expect-error
-interface CategoryState extends EntityState<Category, number> {
-  categories: Category[];
-  status: STATE_STATUS;
-  error: string | null;
-}
-
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-expect-error
-const categoryAdapter = createEntityAdapter<Category>({});
 
 
-/* const initialState: CategoryState = categoryAdapter.getInitialState({
-  status: STATE_STATUS.IDLE,
-  error: null,
-}); */
-
- export interface CategoryResponse  {
+export interface CategoryResponse  {
   id: number;
   nombre: string,
   descripcion: string
   
  }
 
+const categoryAdapter = createEntityAdapter<CategoryResponse>();
+const initialState = categoryAdapter.getInitialState();
+
 
 const BASE_URL = "commerce/catalogo";
 
 export const apiSliceWithCategories = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getCategories: builder.query<CategoryResponse[], void>({
+    getCategories: builder.query<EntityState<CategoryResponse,number >, void>({
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
       query: () => `${BASE_URL}/categoria`,
-      providesTags: ['Categories'],
+      transformResponse(res: CategoryResponse[]){
+        return categoryAdapter.setAll(initialState, res)
+      },
+      
     }),
-    getCategory: builder.query<Category, number>({
-      query: (categoryId) => `/categories/${categoryId}`,
-    }),
-    addNewCategory: builder.mutation<Category, NewCategory>({
-      query: (initialCategory) => ({
-        url: "/categories",
-        method: "POST",
-        body: initialCategory,
-      }),
-      invalidatesTags: ['Categories'],
-    }),
-    updateCategory: builder.mutation<Category, Category>({
-      query: (editedCategory) => ({
-        url: `/categories/${editedCategory.id}`,
-        method: "PATCH",
-        body: editedCategory,
-      }),
-      invalidatesTags: ['Categories'],
-    }),
-    deleteCategory: builder.mutation<Category, string>({
-      query: (categoryId) => ({
-        url: `/categorys/${categoryId}`,
-        method: "DELETE",
-      }),
-      invalidatesTags: ['Categories'],
-    }),
+   
   }),
 });
 
 
 export const{
   useGetCategoriesQuery,
-  useGetCategoryQuery,
-  useAddNewCategoryMutation,
-  useUpdateCategoryMutation,
-  useDeleteCategoryMutation
 } = apiSliceWithCategories
+
+
 
 export const selectCategoriesResult = apiSliceWithCategories.endpoints.getCategories.select()
 
 
-const emptyCategories: Category[] = []
 
 export const selectCategorysResult = apiSliceWithCategories.endpoints.getCategories.select();
 
-export const selectAllcategoriess = createSelector(
-  selectCategorysResult,
-  categorysResult => categorysResult?.data ?? emptyCategories
-)
 
+const selectCategoriesData = createSelector(
+  selectCategoriesResult,
+  (result) => result.data ?? initialState
+);
 
-export const selectcategoryById = createSelector(
-  selectAllcategoriess,
-  (_state: RootState, categoryId: number) => categoryId,
-  (categories, categoryId) => categories.find(category => category.id === categoryId)
-)
+export const { selectAll: selectAllCategories, selectById: selectCategoryById } =
+  categoryAdapter.getSelectors(selectCategoriesData);

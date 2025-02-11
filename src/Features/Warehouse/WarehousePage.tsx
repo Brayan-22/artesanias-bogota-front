@@ -2,7 +2,10 @@ import { Box } from "@mui/material";
 import { Outlet } from "react-router-dom";
 import WarehouseDashBoard from "./WarehouseDashBoard";
 
+
 const WarehousePage = ({}) => {
+
+
 
   
   

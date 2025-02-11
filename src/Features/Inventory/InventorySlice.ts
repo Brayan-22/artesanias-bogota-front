@@ -1,14 +1,10 @@
 import {
   createEntityAdapter,
-  createSelector,
-  EntityState,
 } from "@reduxjs/toolkit";
-import { STATE_STATUS } from "../responseStatus";
 import { apiSlice } from "../api/apiSlice";
-import { RootState } from "../../app/store";
 
 export interface InventoryResponse {
-  id: number;
+  id: string;
   idProducto: string;
   idAlmacen: string;
   sucursal: string;
@@ -16,60 +12,55 @@ export interface InventoryResponse {
   cantidad: number;
 }
 
-export interface InventoryProductResponse{
-  idProducto: string;
-  idAlmacen: string,
-  sucursal: string,
-  producto: string,
-  cantidad: number
+export interface InventoryRequest{
+  cantidad: number;
 }
 
-interface InventorysState extends EntityState<InventoryResponse, string> {
-  status: STATE_STATUS;
-  error: string | null;
-}
-
-const inventoryAdapter = createEntityAdapter<InventoryResponse>({});
+const inventoryAdapter = createEntityAdapter<InventoryResponse>();
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-expect-error
-const initialState: InventorysState = inventoryAdapter.getInitialState({
-  status: STATE_STATUS.IDLE,
-  error: null,
-});
+const initialState = inventoryAdapter.getInitialState();
 
 const BASE_URL = "inventory";
 
 export const apiSliceWithInventorys = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getInventorys: builder.query<InventoryResponse[], void>({
-      query: () => `${BASE_URL}/all?page=0&size=10`,
-
-      providesTags: ["Categories"],
+    getInventoryByWarewouseId: builder.query<InventoryResponse[],string>({
+      query: (warehouseId) => ({
+        url: `${BASE_URL}/sucursal/${warehouseId}?page=0&size=10`
+      }),
+      providesTags: ["Products"]
     }),
-    getAllProducts: builder.query<InventoryProductResponse[], void>({
-      query: () => `${BASE_URL}/central?page=0&size=10`,
-
-      providesTags: ["Categories"],
+    addProductToWarehouseInventory: builder.mutation<InventoryResponse, InventoryRequest>({
+      query: (iventoryProduct) => ({
+        url: `${BASE_URL}/all?page=0&size=10`,
+        method: 'POST',
+        body: iventoryProduct
+      }),
+      invalidatesTags: []
     }),
+    updateProductFromWarehouseInventory: builder.mutation<InventoryResponse,{ inventoryId: string, inventory: InventoryRequest}>({
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
+      query: ({inventory, inventoryId}) => ({
+        url: `${BASE_URL}/all?page=0&size=10`,
+        method: 'PATCH',
+      }),
+      invalidatesTags: []
+    }),
+    deleteProductFromWarehouseInventory: builder.mutation<InventoryResponse, string>({
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
+      query: (iventoryId) => ({
+        url: `${BASE_URL}/all?page=0&size=10`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: []
+    }),
+
   }),
 });
 
-export const { useGetInventorysQuery, useGetAllProductsQuery } = apiSliceWithInventorys;
+export const { useGetInventoryByWarewouseIdQuery, useAddProductToWarehouseInventoryMutation, useUpdateProductFromWarehouseInventoryMutation, useDeleteProductFromWarehouseInventoryMutation } = apiSliceWithInventorys; 
 
-const emptyinventorys: InventoryResponse[] = [];
-
-export const selectinventorysResult =
-  apiSliceWithInventorys.endpoints.getInventorys.select();
-
-export const selectAllinventorys = createSelector(
-  selectinventorysResult,
-  (inventorysResult) => inventorysResult?.data ?? emptyinventorys
-);
-
-export const selectInventoyByProductId = createSelector(
-  selectAllinventorys,
-  (_state: RootState, producId: string) => producId,
-  (inventorys, producId) =>
-    inventorys.find((inventory) => inventory.idProducto === producId)
-);

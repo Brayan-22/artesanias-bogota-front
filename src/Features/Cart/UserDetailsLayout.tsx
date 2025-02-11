@@ -15,6 +15,7 @@ const UserDetailsLayout = () => {
     </Box>
     )
   } else {
+   
     return <Box>Iniciar sesión</Box>;
   }
 };

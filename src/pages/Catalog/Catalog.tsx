@@ -1,43 +1,32 @@
-import { ProductResponse, useGetProductsQuery } from "../../Features/Product/Products.ts";
-import { Container, Typography } from "@mui/material";
+import {  selectAllProducts,  useGetProductsQuery } from "../../Features/Product/Products.ts";
+import { Box, CircularProgress, Container, Typography } from "@mui/material";
 import ProductList from "./ProductList.tsx";
 import SearchCriteria from "./SearchCriteria.tsx";
-import { useEffect, useState } from "react";
+import { useAppSelector } from "../../app/hooks.ts";
 
 const Catalog = () => {
-  
-  const [fetchProducts, setFetchProducts] = useState<ProductResponse[]>([])
-
- const filterProductsByCategory = (filteredProducts: ProductResponse[]) =>{
-  setFetchProducts(filteredProducts)
- }
-
   const {
-    data: products = [],
     isLoading,
     isSuccess,
     isError,
   } = useGetProductsQuery();
 
-
-  useEffect(() => {
-    setFetchProducts(products);
-  }, [products]);
+  const products = useAppSelector(selectAllProducts)
 
 
 
   if (isLoading) {
     return (
-      <Typography variant="h6" sx={{ mb: 2 }}>
-        Cargando...
-      </Typography>
+      <Box sx={{ display: 'flex', justifyContent:'center' }}>
+      <CircularProgress />
+    </Box>
     );
   } else if (isSuccess) {
 
     return (
       <Container sx={{ display: "flex" }}>
-        <SearchCriteria fetchProducts={fetchProducts} filterProductsByCategory={filterProductsByCategory} />
-        <ProductList products={fetchProducts} />
+        <SearchCriteria />
+        <ProductList products={products} />
       </Container>
     );
   } else if (isError) {
