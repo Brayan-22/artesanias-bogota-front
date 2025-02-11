@@ -1,6 +1,7 @@
+# Etapa 1: Construcción
 FROM node:lts-alpine AS builder
 
-# Establece el directorio de trabajo
+# Establecer directorio de trabajo
 WORKDIR /app
 
 # Crear usuario sin privilegios
@@ -15,31 +16,33 @@ COPY eslint.config.js ./
 COPY tsconfig*.json ./
 COPY vite.config.ts ./
 COPY index.html ./
-# Copiar configuración de nginx
-COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Asegurarse de que nginx puede leer la configuración
-RUN chown -R nonroot:nonroot /etc/nginx/conf.d
-# Establece los permisos correctos
-RUN chown -R nonroot:nonroot /app && \
-    chmod -R 755 /app
+# Establece permisos correctos
+RUN chown -R nonroot:nonroot /app && chmod -R 755 /app
 
 # Cambia al usuario sin privilegios
 USER nonroot
 
-# Instala dependencias y construye
+# Instala dependencias sin optimizar para producción
 RUN yarn install
-RUN yarn run build
 
-# Segunda etapa
-FROM nginx:stable-alpine-slim AS deploy
+# Etapa 2: Ejecución en modo desarrollo
+FROM node:lts-alpine AS dev
 
-# Crear usuario no root para nginx
-RUN addgroup -S nonroot && adduser -S nonroot -G nonroot
+WORKDIR /app
 
-# Copiar archivos y establecer permisos
-COPY --from=builder /app/dist/ /usr/share/nginx/html/
-RUN chown -R nonroot:nonroot /usr/share/nginx/html
+# Copiar código fuente desde la etapa anterior
+COPY --from=builder /app /app
 
-# Cambiar a usuario no root
-USER nonroot
+# Exponer el puerto de Vite (React) para desarrollo
+EXPOSE 5173
+
+# Configuración para Traefik
+LABEL "traefik.enable"="true"
+LABEL "traefik.docker.network"="reverse-proxy"
+LABEL "traefik.http.routers.react.rule"="Host(`react.localhost`)"
+LABEL "traefik.http.services.react.loadbalancer.server.port"="5173"
+LABEL "treafik.http.routes.react.entrypoints"="web"
+LABEL "traefik.http.routers.react.service"="react"
+# Iniciar la aplicación en modo desarrollo
+CMD ["yarn", "dev", "--host"]
