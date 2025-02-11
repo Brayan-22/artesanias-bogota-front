@@ -79,6 +79,10 @@ export const apiSliceWithProducts = apiSlice.injectEndpoints({
       query: ({ categoryId, sortStyle }) =>
         `${BASE_URL}/producto/${categoryId}?page=0&size=10&sortbyPrice=${sortStyle} `,
     }),
+/* 
+    getProductsByShpId: builder.query<ProductResponse[], void>({
+        query:(shopId) =>
+    }) */
     /* Agregar producto al catálogo */
    /*  addProduct: builder.mutation<ProductResponse, {shopId: number, newProduct: ProductRequest}>({
           query: ({shopId, newProduct}) => ({
