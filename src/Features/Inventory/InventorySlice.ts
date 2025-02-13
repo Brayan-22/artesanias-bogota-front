@@ -22,13 +22,13 @@ const inventoryAdapter = createEntityAdapter<InventoryResponse>();
   //@ts-expect-error
 const initialState = inventoryAdapter.getInitialState();
 
-const BASE_URL = "inventory";
+const BASE_URL = "management";
 
 export const apiSliceWithInventorys = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getInventoryByWarewouseId: builder.query<InventoryResponse[],string>({
       query: (warehouseId) => ({
-        url: `${BASE_URL}/sucursal/${warehouseId}?page=0&size=10`
+        url: `${BASE_URL}/tienda/${warehouseId}?page=0&size=10`
       }),
       providesTags: ["Products"]
     }),

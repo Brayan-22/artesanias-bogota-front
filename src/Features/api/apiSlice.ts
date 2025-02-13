@@ -6,7 +6,7 @@ import { logOut, setCredentials } from '../Authentication/AuthSlice';
 
 
 
-const BASE_URL = import.meta.env.VITE_BACKEND_URL
+const BASE_URL ="/api"
 
 const baseQuery = fetchBaseQuery({
     baseUrl: BASE_URL,

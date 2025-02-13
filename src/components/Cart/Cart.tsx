@@ -11,7 +11,6 @@ import { selectCart, selectCartItemsQuantity } from "../../Features/Cart/Cart";
 import { Typography, Divider } from "@mui/material";
 import CartProductCard from "./CartProductCard";
 import { Link, useParams } from "react-router";
-import { selectCurrentRol } from "../../Features/Authentication/AuthSlice";
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   "& .MuiBadge-badge": {
@@ -27,7 +26,6 @@ const Cart = () => {
   const cartCount = useAppSelector(selectCartItemsQuantity);
   const [open, setOpen] = React.useState(false);
    const {warehouseId} = useParams()
-   const role = useAppSelector(selectCurrentRol)
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
   };
@@ -69,7 +67,7 @@ const Cart = () => {
                   Total: ${totalAmount.toFixed(2)}
                 </Typography>
                 <Link
-                  to={ role === "customer" ?  "/customer/order" : `/admin/warehouse/${warehouseId}/order` }
+                  to={!location.pathname.includes("/admin") ? "/customer/order"  : `/admin/warehouse/${warehouseId}/order` }
                   style={{ textDecoration: "none", width: "100%" }}
                 >
                   <Button

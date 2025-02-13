@@ -12,6 +12,7 @@ export interface WarehouseResponse {
 
 export interface WarehouseRequest {
   id_ubicación: number
+  id_tienda: string
   is_central: boolean
 }
 
@@ -28,11 +29,9 @@ const BASE_URL = "";
 
 export const apiSliceWithwarehouses = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-  /* Obtener lista de almacenes */
+  /* Obtener lista de almacenes de una tienda*/
       getaWarehouses: builder.query<WarehouseResponse, string>({
-         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-expect-error
-        query: (shopId) => ({ url: `${BASE_URL}?page=0&size=10`}),
+        query: (shopId) => ({ url: `/tienda/${shopId}`}),
         providesTags: [],
       }),
       /* Obtener un almacen*/

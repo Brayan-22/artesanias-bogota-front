@@ -13,6 +13,8 @@ nombre: string ;
   email: string;
 }
 
+
+
 export const authApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
         login: builder.mutation<{ accessToken: string, refreshToken:string }, Credentials>({
@@ -26,7 +28,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
             query: (customerData) => ({
                 url: 'auth/register',
                 method: 'POST',
-                body: { ...customerData}
+                body: {...customerData}
             })
         }),
     })

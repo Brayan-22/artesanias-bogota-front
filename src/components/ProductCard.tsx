@@ -24,8 +24,9 @@ const ProductCard: React.FC<PorductCardProps> = ({ product }) => {
           <CardMedia
             component="img"
             height="140"
-            image={defaultImg}
+            image={product.urlImagen || defaultImg}
             alt="green iguana"
+            sx={{height: 200, width: 500}}
           />
           <CardContent>
             <Typography gutterBottom variant="h5" component="div">

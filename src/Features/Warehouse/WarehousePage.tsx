@@ -4,10 +4,6 @@ import WarehouseDashBoard from "./WarehouseDashBoard";
 
 
 const WarehousePage = ({}) => {
-
-
-
-  
   
   return (
     <Box sx={{display:'flex', }}>

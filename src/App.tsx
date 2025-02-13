@@ -25,7 +25,8 @@ import CheckoutFlow from "./Features/Payment/CheckOutFlow";
 import { useAppSelector } from "./app/hooks";
 import { selectCurrentRol } from "./Features/Authentication/AuthSlice";
 import CustomerNavBar from "./components/CustomerNavBar";
-import Error404 from "./pages/Error404";
+
+import AdminCatalog from "./pages/Catalog/AdminCatalog";
 
 function App() {
   const role = useAppSelector(selectCurrentRol);
@@ -37,7 +38,7 @@ function App() {
       {role === "MANAGER" && <NavBar />}
 
       <Routes>
-        <Route path="/" element={role === null || role == "CONSUMER" ? <HomePage /> : <Error404/>} />
+        <Route path="/" element={/* role === null || role == "CONSUMER" ?  */<HomePage /> /* : <Error404/> */} />
         {/* Catálogo */}
         <Route path="products">
           <Route index element={<Catalog />} /> {/* Catálogo general */}
@@ -52,7 +53,7 @@ function App() {
         </Route> */}
 
         {/*Shop  (Emplyee/manager)*/}
-        <Route path="/manager/:shopId" element={role === "MANAGER" ? <ShopPage /> : <Error404/>}>
+        <Route path="/manager/:shopId" element={/* role === "MANAGER" ? */ <ShopPage /> /* : <Error404/> */}>
           {/* Tienda con sus datos */}
           <Route index element={<WarehouseList />} /> {/*Lista de Almacenes  */}
           <Route path="createWarehouse" element={<WarehouseForm />} />
@@ -71,14 +72,14 @@ function App() {
 
         {/*Shop  (Emplyee/admin)*/}
         {/* http://localhost:5173/admin/warehouse/f1b1b3b1-1b1b-1b1b-1b1b-1b1b1b1b1b1b*/}
-        <Route path="/admin/warehouse/:warehouseId" element={role === "ADMIN" ? <WarehousePage /> : <Error404/>}>
+        <Route path="/admin/warehouse/:warehouseId" element={/* role === "ADMIN" ? */ <WarehousePage />/*  : <Error404/> */}>
           <Route index element={<WarehouseTable />} />
-          <Route path="products" element={<Catalog />} />
+          <Route path="products" element={<AdminCatalog/>} />
           <Route path="products/:productId" element={<ProductPage />} />
           <Route path="order" element={<OrderSumary />} />
         </Route>
 
-        <Route path="customer" element={ role == "CONSUMER" ? <CustomerPage />: <Error404/>}>
+        <Route path="customer" element={ /* role == "CONSUMER" ?  */<CustomerPage />/* : <Error404/> */}>
           <Route index element={<CustomerHistory />} />
           <Route path="customerInfo" element={<CustomerInfo />} />
           {/* order */}

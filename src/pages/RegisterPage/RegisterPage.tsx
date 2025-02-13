@@ -3,6 +3,7 @@ import { TextField, Button, Box, Typography } from "@mui/material";
 import { useRegisterMutation } from "../../Features/Authentication/AuthApiSlice";
 import { useNavigate } from "react-router-dom";
 
+
 interface FormData {
   nombre: string;
   apellido: string;
@@ -54,8 +55,21 @@ function RegisterPage() {
     e.preventDefault();
     if (validateForm()) {
       try {
-        /* const userData = */ await register({ ...formData }).unwrap();
-        /*  localStorage.setItem("token", userData.accessToken) */
+        console.log("Datoss enviados", {
+          nombre: formData.nombre,
+          apellido: formData.apellido,
+          email: formData.email,
+          Password: formData.password, 
+          direccion: formData.direccion
+        })
+        const userData = await register({
+          nombre: formData.nombre,
+          apellido: formData.apellido,
+          email: formData.email,
+          password: formData.password, 
+          direccion: formData.direccion
+        }).unwrap();
+         localStorage.setItem("token", userData.accessToken)
         setFormData({
           nombre: "",
           apellido: "",

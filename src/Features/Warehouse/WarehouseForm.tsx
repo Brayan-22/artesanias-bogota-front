@@ -42,7 +42,7 @@ const warehouseForm = () => {
   
 
   const handleCreatewarehouse = async() => {
-    await addWarehouse({shopId: Number(shopId), newWarehouse: {id_ubicación: formState.location, is_central: formState.is_central}})
+    await addWarehouse({shopId: Number(shopId), newWarehouse: {id_ubicación: formState.location, is_central: formState.is_central, id_tienda: ""}})
   };
  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-expect-error

@@ -8,72 +8,78 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import SellIcon from "@mui/icons-material/Sell";
+import StorefrontIcon from '@mui/icons-material/Storefront';
 
 const WarehouseDashBoard = () => {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   const { warehouseId } = useParams();
- 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-expect-error
-  const adminOptions = <>
+  const location = useLocation();
 
-    <Link to={`/admin/warehouse/${warehouseId}/products`}>
-      <ListItem disablePadding>
-        <ListItemButton>
-          <ListItemIcon>
-            <AddIcon />
-          </ListItemIcon>
-          <ListItemText primary="Catalogo de productos" />
-        </ListItemButton>
-      </ListItem>
-    </Link>
-
-    <Link to={`/admin/warehouse/${warehouseId}`}>
-  <ListItem disablePadding>
-    <ListItemButton>
-      <ListItemIcon>
-        <InventoryIcon />
-      </ListItemIcon>
-      <ListItemText primary="Inventario del almacen" />
-    </ListItemButton>
-  </ListItem>
-</Link>
-  </>;
+  console.log("admin mode ", location.pathname.includes("/admin"));
   
-  const managerOptions =<>
-  <Link to={`../warehouse/${warehouseId}`}>
-  <ListItem disablePadding>
-    <ListItemButton>
-      <ListItemIcon>
-        <InventoryIcon />
-      </ListItemIcon>
-      <ListItemText primary="Productos del almacen" />
-    </ListItemButton>
-  </ListItem>
-</Link>
-    <Link to={`../warehouse/${warehouseId}/inventory`}>
-      <ListItem disablePadding>
-        <ListItemButton>
-          <ListItemIcon>
-            <AddIcon />
-          </ListItemIcon>
-          <ListItemText primary="Asignar productos" />
-        </ListItemButton>
-      </ListItem>
-    </Link>
-    <Link to={`/manager/createWarehouse`}>
-      <ListItem disablePadding>
-        <ListItemButton>
-          <ListItemIcon>
-            <SellIcon />
-          </ListItemIcon>
-          <ListItemText primary="Ventas" />
-        </ListItemButton>
-      </ListItem>
-    </Link>
-  </> ;
+
+  const adminOptions = (
+    <>
+      <Link to={`/admin/warehouse/${warehouseId}/products`}>
+        <ListItem disablePadding>
+          <ListItemButton>
+            <ListItemIcon>
+              <StorefrontIcon/>
+            </ListItemIcon>
+            <ListItemText primary="Catalogo de productos" />
+          </ListItemButton>
+        </ListItem>
+      </Link>
+
+      <Link to={`/admin/warehouse/${warehouseId}`}>
+        <ListItem disablePadding>
+          <ListItemButton>
+            <ListItemIcon>
+              <InventoryIcon />
+            </ListItemIcon>
+            <ListItemText primary="Inventario del almacen" />
+          </ListItemButton>
+        </ListItem>
+      </Link>
+    </>
+  );
+
+  const managerOptions = (
+    <>
+      <Link to={`../warehouse/${warehouseId}`}>
+        <ListItem disablePadding>
+          <ListItemButton>
+            <ListItemIcon>
+              <InventoryIcon />
+            </ListItemIcon>
+            <ListItemText primary="Productos del almacen" />
+          </ListItemButton>
+        </ListItem>
+      </Link>
+      <Link to={`../warehouse/${warehouseId}/inventory`}>
+        <ListItem disablePadding>
+          <ListItemButton>
+            <ListItemIcon>
+              <AddIcon />
+            </ListItemIcon>
+            <ListItemText primary="Asignar productos" />
+          </ListItemButton>
+        </ListItem>
+      </Link>
+      <Link to={`/manager/createWarehouse`}>
+        <ListItem disablePadding>
+          <ListItemButton>
+            <ListItemIcon>
+              <SellIcon />
+            </ListItemIcon>
+            <ListItemText primary="Ventas" />
+          </ListItemButton>
+        </ListItem>
+      </Link>
+    </>
+  );
 
   return (
     <Box
@@ -81,8 +87,7 @@ const WarehouseDashBoard = () => {
     >
       <nav aria-label="main mailbox folders">
         <List>
-          
-          {/* testMode.mode === "manager" ?  */managerOptions/*  : adminOptions */}
+          {!location.pathname.includes("/admin") ? managerOptions : adminOptions}
         </List>
       </nav>
     </Box>

@@ -8,7 +8,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { useAppDispatch } from "../../app/hooks";
 import { CartItem, itemDeletedFromCart } from "../../Features/Cart/Cart";
 import { CardActionArea } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 export type CartProductCardProps = {
   cartItem: CartItem;
@@ -21,9 +21,11 @@ const CartProductCard: React.FC<CartProductCardProps> = ({ cartItem }) => {
     dispatch(itemDeletedFromCart(cartItemId));
   };
 
+  const {warehouseId} = useParams()
+
   return (
-    <Link to={`products/${cartItem.id}`}> 
-      <Card sx={{ maxWidth: 200, mb: 2 }}>
+    <Card sx={{ maxWidth: 200, mb: 2 }}>
+      <Link to={warehouseId ? `products/${cartItem.id}` : `admin/warehouse/${warehouseId}/products/${cartItem.id}`}>
         <CardActionArea>
           <CardMedia
             component="img"
@@ -47,15 +49,15 @@ const CartProductCard: React.FC<CartProductCardProps> = ({ cartItem }) => {
             </Typography>
           </CardContent>
         </CardActionArea>
-        <CardActions sx={{ display: "flex", justifyContent: "space-evenly" }}>
-          {/*  <EditIcon /> */}
-          <DeleteIcon
-            sx={{ cursor: "pointer" }}
-            onClick={() => handleDeleteCartItem(cartItem.id)}
-          />
-        </CardActions>
-      </Card>
-    </Link>
+      </Link>
+      <CardActions sx={{ display: "flex", justifyContent: "space-evenly" }}>
+        {/*  <EditIcon /> */}
+        <DeleteIcon
+          sx={{ cursor: "pointer" }}
+          onClick={() => handleDeleteCartItem(cartItem.id)}
+        />
+      </CardActions>
+    </Card>
   );
 };
 
