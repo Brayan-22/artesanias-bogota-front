@@ -1,4 +1,4 @@
-import {    useGetProductsByWarehouseIdQuery } from "../../Features/Product/Products.ts";
+import {  useGetProductsByWarehouseIdQuery } from "../../Features/Product/Products.ts";
 import { Box, CircularProgress, Container, Typography } from "@mui/material";
 import ProductList from "./ProductList.tsx";
 import SearchCriteria from "./SearchCriteria.tsx";

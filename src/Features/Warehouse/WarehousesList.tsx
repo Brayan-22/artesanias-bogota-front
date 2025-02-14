@@ -39,15 +39,15 @@ const WarehouseList = () => {
   
 
 
- // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-expect-error
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-expect-error
   const handleClick = (event: React.MouseEvent<unknown>, id: string) => {
     const newSelected: string = id;
 
     setSelected(newSelected);
   };
- // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-expect-error
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-expect-error
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };

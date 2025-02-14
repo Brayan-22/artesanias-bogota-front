@@ -24,19 +24,24 @@ import OrderSumary from "./Features/Cart/OrderSumary";
 import CheckoutFlow from "./Features/Payment/CheckOutFlow";
 import { useAppSelector } from "./app/hooks";
 import { selectCurrentRol } from "./Features/Authentication/AuthSlice";
-import CustomerNavBar from "./components/CustomerNavBar";
+/* import CustomerNavBar from "./components/CustomerNavBar"; */
 
 import AdminCatalog from "./pages/Catalog/AdminCatalog";
 import AllocateProducts from "./Features/Warehouse/AllocateProducts";
+import CustomerNavBar from "./components/CustomerNavBar";
+import AdminNavBar from "./components/AdminNavBar";
+import ManagerNavBar from "./components/ManagerNavBar";
+/* import AdminNavBar from "./components/AdminNavBar";
+import ManagerNavBar from "./components/ManagerNavBar"; */
 
 function App() {
   const role = useAppSelector(selectCurrentRol);
   return (
     <BrowserRouter>
-      {role === null && <NavBar />}
-      {role === "CONSUMER" && <CustomerNavBar />}
-      {role === "ADMIN" && <NavBar />}
-      {role === "MANAGER" && <NavBar />}
+      {role === null && <NavBar />   }
+      {role === "CLIENTE" && <CustomerNavBar />}
+      {role === "ADMIN"   && <AdminNavBar />}
+      {role === "MANAGER" && <ManagerNavBar/>}
 
       <Routes>
         <Route path="/" element={/* role === null || role == "CONSUMER" ?  */<HomePage /> /* : <Error404/> */} />
@@ -79,6 +84,8 @@ function App() {
         <Route path="customer" element={ /* role == "CONSUMER" ?  */<CustomerPage />/* : <Error404/> */}>
           <Route index element={<CustomerHistory />} />
           <Route path="customerInfo" element={<CustomerInfo />} />
+          <Route path="history" element = {<CustomerHistory/>}/>
+
           {/* order */}
           <Route path="order" element={<OrderPage />}>
             <Route element={<UserDetailsLayout />}>

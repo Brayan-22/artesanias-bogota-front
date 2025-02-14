@@ -73,13 +73,14 @@ const LoginPage = () => {
       const userData = await login({email , password: pwd}).unwrap();
       localStorage.setItem("token", userData.accessToken)
       const data =  decodeJWT(userData.accessToken)
-      dispatch(setCredentials({data, token:userData.accessToken}));
+ 
+      dispatch(setCredentials({ rol: data.rol, id: data.id ,token:userData.accessToken}));
       setUser("");
       setPwd("");
       navigate("/products");
     } catch (err: any) {
       if (!err?.originalStatus) {
-        setErrMsg("No Server Response");
+        setErrMsg("Ha ucurrido un erro al iniciar sesión");
       } else if (err.originalStatus === 400) {
         setErrMsg("Missing Username or Password");
       } else if (err.originalStatus === 401) {

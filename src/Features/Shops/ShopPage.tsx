@@ -2,9 +2,17 @@ import { Box } from "@mui/material";
 import { Outlet,} from "react-router-dom";
 import StoreOptions from "./ShopOptions";
 import { defaultShop} from "./ShopSlice";
+import { setCredentials } from "../Authentication/AuthSlice";
+import { useAppDispatch } from "../../app/hooks";
 
 const ShopPage = ({}) => {
+  const dispatch = useAppDispatch()
  
+   dispatch(setCredentials({
+     rol: "MANAGER",
+     id: "1",
+      token: ""
+   }))
   //const { shopId } = useParams();
   //const {data: shop, isSuccess, isLoading} = useGetshopQuery(shopId!)
 

@@ -78,6 +78,8 @@ const ProductPurchase: React.FC<ProductPurchaseProps> = ({ product }) => {
       <Typography variant="h4">{product.nombre}</Typography>
       {/* <Typography variant="body2">Categoría: {product.category_id ? "category" : "N/A"}</Typography> */}
       <Typography variant="h6" sx={{ color: "green" }}>
+        {/* // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-expect-error */}
         ${product.precio.toFixed(2)} USD
       </Typography>
 

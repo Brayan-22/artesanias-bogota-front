@@ -27,7 +27,7 @@ const WarehouseTable = () => {
   const { warehouseId } = useParams();
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-expect-error
-  const { data: inventories = [], isLoading } = useGetInventoryByWarewouseIdQuery(warehouseId!);
+  let  { data: inventories = [], isLoading } = useGetInventoryByWarewouseIdQuery(warehouseId!);
   const [updateProductFromWarehouseInventory] = useUpdateProductFromWarehouseInventoryMutation();
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-expect-error

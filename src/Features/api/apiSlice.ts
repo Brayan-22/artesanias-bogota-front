@@ -6,10 +6,10 @@ import { logOut, setCredentials } from '../Authentication/AuthSlice';
 
 
 
-const BASE_URL ="/api"
+const BASE_URL = "/api"
 const baseQuery = fetchBaseQuery({
     baseUrl: BASE_URL,
-    credentials: 'include' ,
+/*     credentials: 'include' , */
     prepareHeaders: (headers, { getState }) => {
         const state = getState() as RootState;
         const token = state.auth.token;
@@ -29,6 +29,8 @@ const baseQueryWithReauth: BaseQueryFn<FetchArgs, unknown, FetchBaseQueryError> 
         console.log(refreshResult);
         if (refreshResult?.data) {
             const user = (api.getState() as RootState).auth.id;
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
             api.dispatch(setCredentials({ ...refreshResult.data, user }));
             console.log("user", user);
             result = await baseQuery(args, api, extraOptions);

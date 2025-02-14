@@ -6,12 +6,12 @@ import {
 import { apiSlice } from "../api/apiSlice";
 
 export interface ProductResponse {
-  id: string;
-  nombre: string;
-  precio: number;
-  descripcion: string;
-  urlImagen: string;
-  id_categoria: number
+  id: string
+  nombre: string | null;
+  precio: number  | null;
+  descripcion: string | null;
+  urlImagen: string | null;
+  idCategoria: number | null
 }
 
 
@@ -21,7 +21,7 @@ export interface ProductRequest {
   precio: number  | null;
   descripcion: string | null;
   urlImagen: string | null;
-  id_categoria: number | null
+  idCategoria: number | null
 }
 
 const productAdapter = createEntityAdapter<ProductResponse>();
@@ -79,35 +79,38 @@ export const apiSliceWithProducts = apiSlice.injectEndpoints({
 
     /* Catalogo  de una tienda */
 
-    getProductsByShopId:builder.query<EntityState<ProductResponse, string>, string>({
-      query: (idTienda) => ({url: `commerce/catalogo/almacen/${idTienda}?page=0&size=50`,
+    getProductsByShopId:builder.query<ProductResponse[],  string>({
+      query: (idTienda) => ({url: `management/tienda/productos/${idTienda}`,
       }),
-      transformResponse(res: ProductResponse[]) {
-        return productAdapter.setAll(initialState, res);
-      },
+      
       providesTags: ["Products", "Categories"],
     }),
 
     // Añadir un nuevo producto a al tienda 
     
     AddProductToShop: builder.mutation<ProductResponse, {newProduct: ProductRequest, shopId: string}>({
+      /* // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-expect-error */
       query: ({newProduct , shopId}) => ({
-        url:`${newProduct} ${shopId}`,
+        url:`management/producto/save`,
         method: "POST",
-        body: newProduct
+        body: {...newProduct}
       })
     }),
-    updateProductFromShop: builder.mutation<ProductResponse, {updatedProduct: ProductRequest, productId: string, shopId: string}>({
-      query: ({updatedProduct, shopId, productId}) => ({
-        url:`${updatedProduct}, ${shopId}, ${productId} `,
+    updateProductFromShop: builder.mutation<ProductResponse, {updatedProduct: ProductRequest, productId: string}>({
+      query: ({updatedProduct,productId}) => ({
+        url:`management/producto/update/${productId} `,
         method: "PATCH",
         body: updatedProduct
       })
     }),
     detelteProductFromShop: builder.mutation<ProductResponse, { productId: string, shopId: string}>({
       query: ({shopId, productId}) => ({
-        url:`${shopId}, ${productId} `,
+        url:`management/tienda/producto/${shopId}`,
         method: "DELETE",
+        body:{
+          idProducto: productId
+        }
       })
     })
 

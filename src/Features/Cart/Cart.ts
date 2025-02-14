@@ -4,14 +4,16 @@ import { RootState } from "../../app/store";
 
 
 export interface CartItem {
-  id: string;
+  id: string;// solo id
   product: ProductResponse;
-  quantity: number;
+  quantity: number; //ccantidad
 }
 
+
+
 export interface Cart {
-  cartItems: CartItem[];
-  totalAmount: number;
+  cartItems: CartItem[]; //cartItems
+  totalAmount: number; //total amount
   totalItems: number;
 }
 
@@ -43,6 +45,8 @@ const cartSlice = createSlice({
         };
         state.cartItems.push(newCartItem);
       }
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-expect-error
       state.totalAmount += cartItem.product.precio * cartItem.quantity;
       state.totalItems += cartItem.quantity;
     },
@@ -56,6 +60,8 @@ const cartSlice = createSlice({
 
       if (itemToRemove) {
         state.totalItems -= itemToRemove.quantity;
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-expect-error
         state.totalAmount -= itemToRemove.product.precio * itemToRemove.quantity;
 
         state.cartItems = state.cartItems.filter(

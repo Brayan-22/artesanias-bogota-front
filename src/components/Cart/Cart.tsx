@@ -22,6 +22,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 }));
 
 const Cart = () => {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   const { cartItems, totalAmount } = useAppSelector(selectCart);
   const cartCount = useAppSelector(selectCartItemsQuantity);
   const [open, setOpen] = React.useState(false);

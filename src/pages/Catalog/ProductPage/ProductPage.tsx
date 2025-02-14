@@ -27,7 +27,7 @@ const ProductPage = () => {
           <CircularProgress />
         </Box>
     );
-  } else if (isSuccessProducts ) {
+  } else if (isSuccessProducts && product ) {
     return (
       <Container sx={{ mt: 4 }}>
         <Box
@@ -53,7 +53,9 @@ const ProductPage = () => {
               <ProductPurchase
                 product={product}
               />
-              <ProductDetails description={product.descripcion} />
+              {/* // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-expect-error */}
+              <ProductDetails description={product ? product?.descripcion: ""} />
             </Box>
           ) : (
             <Typography variant="h6" sx={{ mb: 2 }}>

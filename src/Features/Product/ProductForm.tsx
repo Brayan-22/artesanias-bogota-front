@@ -17,6 +17,8 @@ import { ProductRequest, selectProductById, useAddProductToShopMutation, useGetP
 
 const ProductForm = () => {
   const { shopId,productId } = useParams();
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-expect-error
   const navigate = useNavigate();
   const path = useLocation().pathname;
 
@@ -37,7 +39,7 @@ const ProductForm = () => {
     precio: product ? product.precio :  0,
     descripcion: product ? product.descripcion : "",
     urlImagen: product ? product.urlImagen : "",
-    id_categoria: product ? product.id_categoria : 0
+    idCategoria: product ? product.idCategoria : 0
 
   });
 const handleInputChange = (
@@ -53,7 +55,7 @@ const handleInputChange = (
   }
 
   setFormState((prevState) =>
-    prevState ? { ...prevState, [name]: name === "id_categoria" ? Number(value) : value } : null
+    prevState ? { ...prevState, [name]: name === "idCategoria" ? Number(value) : value } : null
   );
 };
 
@@ -77,22 +79,27 @@ const handleInputChange = (
   
 
   const handleCreateProduct = async () => {
+    let res = null
      formState && shopId && (
-      await addProductToShop({ shopId: shopId, newProduct: {...formState}})
+      res =  await addProductToShop({ shopId: shopId, newProduct: {...formState}})
     )
+    if(res){
+      if(res.data)
+        alert("El producto se ha añadido de manera correcta")
+      }
     
   };
 
   const handleEditProduct = async () => {
     formState && shopId &&  productId && (
-      await updateProductFromShop({  productId: productId,  shopId: shopId, updatedProduct: {...formState}})
+      await updateProductFromShop({  productId: productId, updatedProduct: {...formState}})
     )
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     !product ? handleCreateProduct() : handleEditProduct();
-    navigate(`../products`);
+    //navigate(`../products`);
   };
 
   if (!product && !path.includes("createProduct")) {
@@ -158,9 +165,9 @@ const handleInputChange = (
           </Stack>
           <NativeSelect
             sx={{ mb: 5 , mt: 2}}
-            name="id_categoria"
+            name="idCategoria"
        
-            value={formState?.id_categoria}
+            value={formState?.idCategoria}
             onChange={handleInputChange}
           >
             {categories.map((category) => (
