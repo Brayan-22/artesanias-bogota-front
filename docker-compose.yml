@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  front:
+    image: brayan22/artesanias-front:latest
+    networks:
+      - reverse-proxy
+    container_name: front
+    ports:
+      - "3000:80"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=reverse-proxy"
+      - "traefik.http.routers.front.entrypoints=web"
+      - "traefik.http.routers.front.rule=Host(`front.localhost`)"
+      - "traefik.http.routers.front.service=slud-xx-front"
+      - "traefik.http.services.front.loadbalancer.server.port=3000"
+networks:
+  reverse-proxy:
+    external: true
