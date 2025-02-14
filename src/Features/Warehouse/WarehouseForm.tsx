@@ -6,10 +6,9 @@ import {
   Typography,
   Paper,
   Stack,
-  NativeSelect,
 } from "@mui/material";
 import { useParams, useNavigate, Link, useLocation } from "react-router-dom";
-import { useAddWarehouseMutation, useGetWarehouseQuery, useUpdateWarehouseMutation,  } from "./Warehouses";
+import { useAddWarehouseMutation,  useUpdateWarehouseMutation,  } from "./Warehouses";
 
 const warehouseForm = () => {
   const { shopId, warehouseId } = useParams();
@@ -17,15 +16,20 @@ const warehouseForm = () => {
   const navigate = useNavigate();
   const path = useLocation().pathname;
 
-  const { data: warehouse } = useGetWarehouseQuery({ 
+  /* const { data: warehouse } = useGetWarehouseQuery({ 
     warehouseId: warehouseId ?? "", 
     shopId: shopId ?? "" 
-  });
+  }); */
+  const warehouse = null;
   const [addWarehouse] = useAddWarehouseMutation()
   const [updateWarehouse] = useUpdateWarehouseMutation()
 
   const [formState, setFormState] = useState({
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
     location: warehouse?.id_ubicación || 0,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
     is_central: warehouse?.is_central || false,
   });
 
@@ -42,6 +46,8 @@ const warehouseForm = () => {
   
 
   const handleCreatewarehouse = async() => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
     await addWarehouse({shopId: Number(shopId), newWarehouse: {id_ubicación: formState.location, is_central: formState.is_central, id_tienda: ""}})
   };
  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -89,7 +95,7 @@ const warehouseForm = () => {
             
           
           </Stack>
-          <NativeSelect
+        {/*   <NativeSelect
             sx={{ mb: 5 }}
             name="category_id"
             value={formState.is_central ? 1 : 0}
@@ -102,7 +108,7 @@ const warehouseForm = () => {
                  Punto central
               </option>
           </NativeSelect>
-          
+           */}
         </Stack>
         <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
           <Button variant="contained" color="primary" type="submit">

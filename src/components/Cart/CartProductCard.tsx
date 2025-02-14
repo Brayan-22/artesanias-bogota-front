@@ -16,22 +16,25 @@ export type CartProductCardProps = {
 
 const CartProductCard: React.FC<CartProductCardProps> = ({ cartItem }) => {
   const dispatch = useAppDispatch();
+  const {warehouseId} = useParams();
 
   const handleDeleteCartItem = (cartItemId: string) => {
     dispatch(itemDeletedFromCart(cartItemId));
   };
 
-  const {warehouseId} = useParams()
-
+  const rol = "admin"
+  
   return (
     <Card sx={{ maxWidth: 200, mb: 2 }}>
-      <Link to={warehouseId ? `products/${cartItem.id}` : `admin/warehouse/${warehouseId}/products/${cartItem.id}`}>
+      
+      <Link to={!(rol == "admin") ? `products/${cartItem.id}` : `admin/warehouse/${warehouseId}/products/${cartItem.id}`}>
         <CardActionArea>
           <CardMedia
             component="img"
             height="140"
             image={cartItem.product.urlImagen}
             alt="green iguana"
+            sx={{ height:"140"}}
           />
           <CardContent
             sx={{

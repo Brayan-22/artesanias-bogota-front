@@ -16,43 +16,73 @@ import {
   TextField,
 } from "@mui/material";
 import { alpha } from "@mui/material/styles";
-import {  useParams } from "react-router-dom";
-import { useGetInventoryByWarewouseIdQuery, useUpdateProductFromWarehouseInventoryMutation } from "../Inventory/InventorySlice";
-
-
+import { useParams } from "react-router-dom";
+import {
+  InventoryResponse,
+  useGetInventoryByWarewouseIdQuery,
+  useUpdateProductFromWarehouseInventoryMutation,
+} from "../Inventory/InventorySlice";
 
 const WarehouseTable = () => {
   const { warehouseId } = useParams();
-   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-expect-error
-  const { data: products, isLoading } = useGetInventoryByWarewouseIdQuery(warehouseId!)
-  const [updateProductFromWarehouseInventory] = useUpdateProductFromWarehouseInventoryMutation()
- // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  const { data: inventories = [], isLoading } = useGetInventoryByWarewouseIdQuery(warehouseId!);
+  const [updateProductFromWarehouseInventory] = useUpdateProductFromWarehouseInventoryMutation();
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-expect-error
   const [selected, setSelected] = useState<string[]>([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [editableStock, setEditableStock] = useState<{ [key: string]: boolean }>({});
+  const [stockValues, setStockValues] = useState<{ [key: string]: number }>({});
 
-  const rows = products ? products.map((product) => ({
-    id: product.idProducto,
-    name: product.producto,
-    stock: product.cantidad,
-    inventoryId: product.id
-  })) : [];
+  const rows = inventories
+    ? inventories.map((inventory: InventoryResponse) => ({
+        idAlmacen: inventory.idAlmacen,
+        idProducto: inventory.idProducto,
+        producto: inventory.producto,
+        cantidad: inventory.cantidad,
+      }))
+    : [];
 
-  const toggleEditStock = (id: string) => {
-    setEditableStock((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
+  // Manejar cambios en el campo de stock
+  const handleStockChange = (idProducto: string, value: string) => {
+    if (/^\d*$/.test(value)) {
+      setStockValues((prev) => ({
+        ...prev,
+        [idProducto]: Number(value),
+      }));
+    }
   };
 
+  // Activar edición o guardar cambios
+  const toggleEditStock = async (row: InventoryResponse) => {
+    const { idProducto, idAlmacen } = row;
+    const isEditing = editableStock[idProducto];
 
-  const handleSaveStock = async (inventoryId: string, stock: number)=> {
-    console.log(`Guardar cambios del producto ${inventoryId} con nuevo stock: ${stock}`);
-    await updateProductFromWarehouseInventory({ inventoryId, inventory: {cantidad: stock} })
-      
+    if (isEditing) {
+      await updateProductFromWarehouseInventory({
+        inventory: {
+          idAlmacen,
+          idProducto,
+          cantidad: stockValues[idProducto] ?? row.cantidad, // Si no se editó, mantener el valor original
+        },
+      });
+    }
+
+    setEditableStock((prev) => ({
+      ...prev,
+      [idProducto]: !prev[idProducto],
+    }));
+
+    // Inicializa el valor de stock cuando se activa la edición
+    if (!isEditing) {
+      setStockValues((prev) => ({
+        ...prev,
+        [idProducto]: row.cantidad,
+      }));
+    }
   };
 
   return (
@@ -62,7 +92,9 @@ const WarehouseTable = () => {
           sx={{
             pl: { sm: 2 },
             pr: { xs: 1, sm: 1 },
-            bgcolor: selected.length > 0 ? (theme) => alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity) : undefined,
+            bgcolor: selected.length > 0
+              ? (theme) => alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity)
+              : undefined,
           }}
         >
           <Typography sx={{ flex: "1 1 100%" }} variant="h6" id="tableTitle">
@@ -76,7 +108,7 @@ const WarehouseTable = () => {
                 <TableCell padding="checkbox">
                   <Checkbox color="primary" />
                 </TableCell>
-                {["ID", "Nombre", "Stock", "Precio", "Categoría", "Descripción", "Acciones"].map((head) => (
+                {["ID", "Nombre", "Cantidad", "Acciones"].map((head) => (
                   <TableCell key={head} align="left">
                     {head}
                   </TableCell>
@@ -84,37 +116,36 @@ const WarehouseTable = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-                <TableRow key={row.id}>
-                  <TableCell padding="checkbox">
-                    <Checkbox color="primary" />
-                  </TableCell>
-                  <TableCell>{row.id}</TableCell>
-                  <TableCell>{row.name}</TableCell>
-                  <TableCell>
-                    <TextField
-                      type="number"
-                      defaultValue={row.stock}
-                      disabled={!editableStock[row.id]}
-                       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-expect-error
-                     onChange={(e) => handleSaveStock(row.id, row.stock)} 
-                      inputProps={{ min: 0, pattern: "[0-9]*" }}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      sx={{ textTransform: "none" }}
-                      onClick={() => toggleEditStock(row.id)}
-                    >
-                      {editableStock[row.id] ? "Guardar cambios" : "Gestionar stock"}
-                    </Button>
-                  
-                  </TableCell>
-                </TableRow>
-              ))}
+              {rows
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row) => (
+                  <TableRow key={row.idProducto}>
+                    <TableCell padding="checkbox">
+                      <Checkbox color="primary" />
+                    </TableCell>
+                    <TableCell>{row.idProducto}</TableCell>
+                    <TableCell>{row.producto}</TableCell>
+                    <TableCell>
+                      <TextField
+                        type="number"
+                        value={stockValues[row.idProducto] ?? row.cantidad}
+                        disabled={!editableStock[row.idProducto]}
+                        onChange={(e) => handleStockChange(row.idProducto, e.target.value)}
+                        inputProps={{ min: 0, pattern: "[0-9]*" }}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        sx={{ textTransform: "none" }}
+                        onClick={() => toggleEditStock(row)}
+                      >
+                        {editableStock[row.idProducto] ? "Guardar cambios" : "Gestionar stock"}
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
         </TableContainer>

@@ -8,12 +8,12 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import SellIcon from "@mui/icons-material/Sell";
 import BarChartIcon from "@mui/icons-material/BarChart";
 const shopOptions = () => {
-  /* const {shopId} = useParams(); */
-  const shopId = 1;
+  const {shopId} = useParams();
+ 
   return (
     <Box
       sx={{ width: "100%", maxWidth: 200, bgcolor: "background.paper", ml: 2 }}

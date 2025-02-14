@@ -27,6 +27,7 @@ import { selectCurrentRol } from "./Features/Authentication/AuthSlice";
 import CustomerNavBar from "./components/CustomerNavBar";
 
 import AdminCatalog from "./pages/Catalog/AdminCatalog";
+import AllocateProducts from "./Features/Warehouse/AllocateProducts";
 
 function App() {
   const role = useAppSelector(selectCurrentRol);
@@ -46,11 +47,7 @@ function App() {
           {/* Página de producto individual */}
         </Route>
 
-      {/*   <Route path="order" element={role == "CONSUMER" ? <OrderPage /> : <Error404/>}>
-          <Route element={<UserDetailsLayout />}>
-            <Route index element={<UserDetails />} />
-          </Route>
-        </Route> */}
+
 
         {/*Shop  (Emplyee/manager)*/}
         <Route path="/manager/:shopId" element={/* role === "MANAGER" ? */ <ShopPage /> /* : <Error404/> */}>
@@ -60,7 +57,7 @@ function App() {
           <Route path="warehouse/:warehouseId" element={<WarehousePage />}>
             {/* Lista de productos del almacen */}
             <Route index element={<WarehouseTable />} />
-            <Route path="inventory" element={<h1>Opciones</h1>} />
+            <Route path="inventory" element={<AllocateProducts/>} />
           </Route>
           <Route path="products" element={<InventoryGeneralTable />} />
           <Route

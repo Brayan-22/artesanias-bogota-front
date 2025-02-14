@@ -38,8 +38,8 @@ const ProductPage = () => {
           }}
         >
           {/* Galería de imágenes del producto */}
-          <Box sx={{ flex: 1, mr: 3, maxWidth:500, height:250 }}>
-            <img src={product.urlImagen || defaultImg} />
+          <Box sx={{ flex: 1, mr: 3, maxWidth:700, height:450 }}>
+            <img src={product.urlImagen || defaultImg} style={{maxWidth:700, height:450}} />
           </Box>
 
           {/* Información del producto */}

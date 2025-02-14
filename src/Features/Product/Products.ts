@@ -11,24 +11,17 @@ export interface ProductResponse {
   precio: number;
   descripcion: string;
   urlImagen: string;
-  id_categoria: string;
+  id_categoria: number
 }
 
-
-export interface ProductResquest {
-  nombre: string;
-  precio: number;
-  descripcion: string;
-  urlImagen: string;
-  id_categoria: string;
-}
 
 
 export interface ProductRequest {
-  nombre: string;
-  precio: number;
-  descripcion: string;
-  urlImagen: string;
+  nombre: string | null;
+  precio: number  | null;
+  descripcion: string | null;
+  urlImagen: string | null;
+  id_categoria: number | null
 }
 
 const productAdapter = createEntityAdapter<ProductResponse>();
@@ -78,14 +71,45 @@ export const apiSliceWithProducts = apiSlice.injectEndpoints({
 
 
     /* Catalogo de un almacen */
-    getProductsByWarehouseId:builder.query<EntityState<ProductResponse, string>, string>({
-      query: (idAlmacen) => ({url: `commerce/catalogo/almacen/${idAlmacen}?page=0&size=50`,
+    getProductsByWarehouseId:builder.query<ProductResponse[], string>({
+      query: (idAlmacen) => ({url: `management/inventario/catalogo/almacen/${idAlmacen}`,
+      }),
+      providesTags: ["Products", "Categories"],
+    }),
+
+    /* Catalogo  de una tienda */
+
+    getProductsByShopId:builder.query<EntityState<ProductResponse, string>, string>({
+      query: (idTienda) => ({url: `commerce/catalogo/almacen/${idTienda}?page=0&size=50`,
       }),
       transformResponse(res: ProductResponse[]) {
         return productAdapter.setAll(initialState, res);
       },
       providesTags: ["Products", "Categories"],
     }),
+
+    // Añadir un nuevo producto a al tienda 
+    
+    AddProductToShop: builder.mutation<ProductResponse, {newProduct: ProductRequest, shopId: string}>({
+      query: ({newProduct , shopId}) => ({
+        url:`${newProduct} ${shopId}`,
+        method: "POST",
+        body: newProduct
+      })
+    }),
+    updateProductFromShop: builder.mutation<ProductResponse, {updatedProduct: ProductRequest, productId: string, shopId: string}>({
+      query: ({updatedProduct, shopId, productId}) => ({
+        url:`${updatedProduct}, ${shopId}, ${productId} `,
+        method: "PATCH",
+        body: updatedProduct
+      })
+    }),
+    detelteProductFromShop: builder.mutation<ProductResponse, { productId: string, shopId: string}>({
+      query: ({shopId, productId}) => ({
+        url:`${shopId}, ${productId} `,
+        method: "DELETE",
+      })
+    })
 
     
   }),
@@ -95,10 +119,12 @@ export const {
   useGetProductsQuery,
   useGetProductQuery,
   useGetProductByCategoryIdQuery,
-  useGetProductsByWarehouseIdQuery
- /*  useAddProductMutation,
-  useUpdateProductMutation,
-  useDeleteProductMutation */
+  useGetProductsByWarehouseIdQuery,
+  useGetProductsByShopIdQuery,
+  useAddProductToShopMutation,
+  useUpdateProductFromShopMutation,
+  useDetelteProductFromShopMutation
+
 } = apiSliceWithProducts;
 
 
@@ -110,6 +136,6 @@ const selectProductsData = createSelector(
   (result) => result.data ?? initialState
 );
 
-export const { selectAll: selectAllProducts, selectById: selectProductById, } =
+export const { selectAll: selectAllProducts, selectById: selectProductById } =
   productAdapter.getSelectors(selectProductsData);
 

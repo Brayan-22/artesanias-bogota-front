@@ -1,26 +1,20 @@
-import {  selectAllProducts,  useGetProductsQuery } from "../../Features/Product/Products.ts";
+import {    useGetProductsByWarehouseIdQuery } from "../../Features/Product/Products.ts";
 import { Box, CircularProgress, Container, Typography } from "@mui/material";
 import ProductList from "./ProductList.tsx";
 import SearchCriteria from "./SearchCriteria.tsx";
-import { useAppSelector } from "../../app/hooks.ts";
 import { useParams } from "react-router-dom";
 
 const AdminCatalog = () => {
-   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-expect-error
+  
     const {warehouseId} = useParams()
-/*   const {
+  const {
+    data: products = [],
     isLoading,
     isSuccess,
     isError,
-  } =  useGetProductsByWarehouseIdQuery(warehouseId!) */
-    const {
-       isLoading,
-       isSuccess,
-       isError,
-     } = useGetProductsQuery();
+  } =  useGetProductsByWarehouseIdQuery(warehouseId!)
+    
 
-  const products = useAppSelector(selectAllProducts)
 
 
 
@@ -31,7 +25,6 @@ const AdminCatalog = () => {
     </Box>
     );
   } else if (isSuccess) {
-
     return (
       <Container sx={{ display: "flex" }}>
         <SearchCriteria />

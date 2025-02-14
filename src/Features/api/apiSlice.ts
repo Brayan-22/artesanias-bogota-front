@@ -7,10 +7,9 @@ import { logOut, setCredentials } from '../Authentication/AuthSlice';
 
 
 const BASE_URL ="/api"
-
 const baseQuery = fetchBaseQuery({
     baseUrl: BASE_URL,
-    credentials: 'include',
+    credentials: 'include' ,
     prepareHeaders: (headers, { getState }) => {
         const state = getState() as RootState;
         const token = state.auth.token;
@@ -31,6 +30,7 @@ const baseQueryWithReauth: BaseQueryFn<FetchArgs, unknown, FetchBaseQueryError> 
         if (refreshResult?.data) {
             const user = (api.getState() as RootState).auth.id;
             api.dispatch(setCredentials({ ...refreshResult.data, user }));
+            console.log("user", user);
             result = await baseQuery(args, api, extraOptions);
         } else {
             api.dispatch(logOut());

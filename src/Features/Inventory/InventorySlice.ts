@@ -1,26 +1,19 @@
-import {
-  createEntityAdapter,
-} from "@reduxjs/toolkit";
+
 import { apiSlice } from "../api/apiSlice";
 
 export interface InventoryResponse {
-  id: string;
   idProducto: string;
   idAlmacen: string;
-  sucursal: string;
   producto: string;
   cantidad: number;
 }
 
 export interface InventoryRequest{
+  idProducto: string;
+  idAlmacen: string;
   cantidad: number;
 }
 
-const inventoryAdapter = createEntityAdapter<InventoryResponse>();
-
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-expect-error
-const initialState = inventoryAdapter.getInitialState();
 
 const BASE_URL = "management";
 
@@ -28,7 +21,7 @@ export const apiSliceWithInventorys = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getInventoryByWarewouseId: builder.query<InventoryResponse[],string>({
       query: (warehouseId) => ({
-        url: `${BASE_URL}/tienda/${warehouseId}?page=0&size=10`
+        url: `${BASE_URL}/inventario/almacen/${warehouseId}`
       }),
       providesTags: ["Products"]
     }),
@@ -40,12 +33,11 @@ export const apiSliceWithInventorys = apiSlice.injectEndpoints({
       }),
       invalidatesTags: []
     }),
-    updateProductFromWarehouseInventory: builder.mutation<InventoryResponse,{ inventoryId: string, inventory: InventoryRequest}>({
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-expect-error
-      query: ({inventory, inventoryId}) => ({
-        url: `${BASE_URL}/all?page=0&size=10`,
+    updateProductFromWarehouseInventory: builder.mutation<InventoryResponse,{ inventory: InventoryRequest}>({
+      query: ({inventory}) => ({
+        url: `${BASE_URL}/inventario/almacen`,
         method: 'PATCH',
+        body: inventory
       }),
       invalidatesTags: []
     }),

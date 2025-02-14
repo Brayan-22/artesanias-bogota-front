@@ -9,75 +9,54 @@ import {
   NativeSelect,
 } from "@mui/material";
 import { useParams, useNavigate, Link, useLocation } from "react-router-dom";
-import { useGetCategoriesQuery } from "../Categories/Category";
+import { selectAllCategories, useGetCategoriesQuery } from "../Categories/Category";
 import {
 } from "../Inventory/InventorySlice";
 import { useAppSelector } from "../../app/hooks";
+import { ProductRequest, selectProductById, useAddProductToShopMutation, useGetProductsByShopIdQuery, useUpdateProductFromShopMutation } from "./Products";
 
 const ProductForm = () => {
-  const { warehouseId, productId } = useParams();
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-expect-error
+  const { shopId,productId } = useParams();
   const navigate = useNavigate();
   const path = useLocation().pathname;
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-expect-error
-  const {/*  data: fetchProducts, isLoading, isSuccess  */} = useGetwarehousesQuery();
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-expect-error
-  const selectedProduct = warehouseId && productId ? useAppSelector((state) => selectProductsByFromWarehouseById(state, {warehouseId, productId})) : null
- 
-  const product = selectedProduct ?  selectedProduct[0] : null;
+  const {} = useGetProductsByShopIdQuery(shopId!)
+  const product = useAppSelector((state) => selectProductById(state, productId!)) 
   
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-expect-error
-  const [addNewProduct] = useAddNewProductMutation();
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-expect-error
-  const [updateProduct] = useUpdateProductMutation();
+  const {} = useGetCategoriesQuery()
+  const categories = useAppSelector(selectAllCategories)
+  
 
-  const { data: categories = [] } = useGetCategoriesQuery();
+  const [addProductToShop] = useAddProductToShopMutation()
+  const [updateProductFromShop] = useUpdateProductFromShopMutation()
 
+  const [preview, setPreview] = useState<string>(product?.urlImagen || "");
 
+  const [formState, setFormState] = useState<ProductRequest | null>({
+    nombre: product ? product.nombre : "",
+    precio: product ? product.precio :  0,
+    descripcion: product ? product.descripcion : "",
+    urlImagen: product ? product.urlImagen : "",
+    id_categoria: product ? product.id_categoria : 0
 
-  const [preview, setPreview] = useState<string>(product?.image || "");
-
-  const [formState, setFormState] = useState({
-    name: product?.producto || "",
-    stock: product?.cantidad || 0,
-   /*  price: product?.precio || 0,
-    category_id: product?.categoria || 0,
-    description: product?.descripcion || "",
-    image: product?.urlImagen || "", */
-    warehouse_id: product?.idAlmacen || "",
-    store_id: product?.sucursal || "",
   });
+const handleInputChange = (
+  e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+) => {
+  const { name, value } = e.target;
 
-  const handleInputChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >
-  ) => {
-    const { name, value } = e.target;
-
-    if (name === "stock" || name === "price") {
-      if (value === "") {
-        setFormState({ ...formState, [name]: "" });
-        return;
-      }
-      if (!/^[0-9]\d*$/.test(value)) {
-        return;
-      }
-      if (!/^\d+(\.\d+)?$/.test(value)) {
-        return;
-      }
-      setFormState({ ...formState, [name]: Number(value) });
+  if (name === "precio") {
+    // Validar solo números positivos (sin espacios, letras, ni caracteres especiales)
+    if (!/^\d*$/.test(value) || Number(value) < 0) {
       return;
     }
+  }
 
-    setFormState({ ...formState, [name]: value });
-  };
+  setFormState((prevState) =>
+    prevState ? { ...prevState, [name]: name === "id_categoria" ? Number(value) : value } : null
+  );
+};
+
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -87,28 +66,33 @@ const ProductForm = () => {
         const result = reader.result;
         if (typeof result === "string") {
           setPreview(result);
-          setFormState((prevState) => ({
-            ...prevState,
-            image: result,
-          }));
+          setFormState((prevState) =>
+            prevState && { ...prevState, urlImagen: result } 
+          );
         }
       };
       reader.readAsDataURL(file);
     }
   };
+  
 
- /*  const handleCreateProduct = async () => {
-    await addNewProduct({ ...formState });
+  const handleCreateProduct = async () => {
+     formState && shopId && (
+      await addProductToShop({ shopId: shopId, newProduct: {...formState}})
+    )
+    
   };
 
   const handleEditProduct = async () => {
-    productId && (await updateProduct({ ...formState, id: productId }));
-  }; */
+    formState && shopId &&  productId && (
+      await updateProductFromShop({  productId: productId,  shopId: shopId, updatedProduct: {...formState}})
+    )
+  };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    /* !product ? handleCreateProduct() : handleEditProduct();
-    navigate(`../products`); */
+    !product ? handleCreateProduct() : handleEditProduct();
+    navigate(`../products`);
   };
 
   if (!product && !path.includes("createProduct")) {
@@ -155,56 +139,41 @@ const ProductForm = () => {
           <TextField
             fullWidth
             label="Nombre del Producto"
-            name="name"
-            value={formState.name}
+            name="nombre"
+            value={formState?.nombre}
             onChange={handleInputChange}
             required
           />
-          <Stack direction="row" spacing={2}>
-            <TextField
-              fullWidth
-              label="Stock"
-              name="stock"
-              type="number"
-              value={formState.stock}
-              onChange={handleInputChange}
-              required
-            />
+         
 
             <TextField
               fullWidth
               label="Precio"
-              name="price"
+              name="precio"
               type="number"
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-expect-error
-              value={formState.price}
+              value={formState && formState.precio}
               onChange={handleInputChange}
               required
             />
           </Stack>
           <NativeSelect
-            sx={{ mb: 5 }}
-            name="category_id"
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-expect-error
-            value={formState.category_id ? formState.category_id : ""}
+            sx={{ mb: 5 , mt: 2}}
+            name="id_categoria"
+       
+            value={formState?.id_categoria}
             onChange={handleInputChange}
           >
-            {/* // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-expect-error */}
             {categories.map((category) => (
               <option key={category.id} value={category.id}>
-                {/* // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  */}
-                {category.name}
+                {category.nombre}
               </option>
-            ))}
+            ))} 
           </NativeSelect>
+          <Stack>
           <TextField
             fullWidth
             label="Descripción"
-            name="description"
+            name="descripcion"
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-expect-error
             value={formState.description}

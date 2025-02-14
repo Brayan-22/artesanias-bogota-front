@@ -19,14 +19,18 @@ import { alpha } from "@mui/material/styles";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { Link } from "react-router-dom";
-import { InventoryResponse, useGetInventoryByWarewouseIdQuery } from "./InventorySlice";
+import { ProductResponse, selectAllProducts, useGetProductsByWarehouseIdQuery } from "../Product/Products";
+import { useAppSelector } from "../../app/hooks";
 
 const InventoryGeneralTable = () => {
   const {
-    data: products = [],
     isLoading,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-expect-error
     isSuccess,
-  } = useGetInventoryByWarewouseIdQuery("1")
+  } = useGetProductsByWarehouseIdQuery("1")
+
+  const products = useAppSelector(selectAllProducts)
 
   const [selected, setSelected] = useState<string[]>([]);
 
@@ -34,12 +38,12 @@ const InventoryGeneralTable = () => {
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const rows = products.map((product: InventoryResponse) => ({
-    id: product.idProducto,
-    nombre: product.producto,
-    cantidad: product.cantidad,
-    tienda: product.sucursal,
-    idAlmacen: product.idAlmacen,
+  const rows = products.map((product: ProductResponse) => ({
+    id: product.id,
+    nombre: product.nombre,
+    descripcion: product.descripcion,
+    id_categoria: product.id_categoria,
+    precio: product.precio
   }));
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -88,7 +92,7 @@ const InventoryGeneralTable = () => {
     <Typography variant="h6" sx={{ mb: 2 }}>
       Cargando...
     </Typography>;
-  } else if (isSuccess) {
+  } 
     return (
       <Box sx={{ width: "100%", mr: 2 }}>
         <Paper sx={{ width: "100%", mb: 2 }}>
@@ -149,7 +153,7 @@ const InventoryGeneralTable = () => {
                       onChange={handleSelectAllClick}
                     />
                   </TableCell>
-                  {["ID", "Nombre", "Stock", "tienda", "Warehouse Id"].map(
+                  {["ID", "Nombre", "Precio", "Descripción", "Id de la categoría"].map(
                     (head) => (
                       <TableCell key={head} align="left">
                         {head}
@@ -178,9 +182,9 @@ const InventoryGeneralTable = () => {
                         </TableCell>
                         <TableCell>{row.id}</TableCell>
                         <TableCell>{row.nombre}</TableCell>
-                        <TableCell>{row.cantidad}</TableCell>
-                        <TableCell>{row.tienda}</TableCell>
-                        <TableCell>{row.idAlmacen}</TableCell>
+                        <TableCell>{row.precio}</TableCell>
+                        <TableCell>{row.descripcion}</TableCell>
+                        <TableCell>{row.id_categoria }</TableCell>
                         <TableCell>
                           <Link to={`../products/editProduct/${row.id}`}>
                             <IconButton>
@@ -211,11 +215,7 @@ const InventoryGeneralTable = () => {
         </Paper>
       </Box>
     );
-  } else {
-    <Typography variant="h6" sx={{ mb: 2 }}>
-      Ha ocurrido un erro al cargar la página
-    </Typography>;
-  }
+  
 };
 
 export default InventoryGeneralTable;
